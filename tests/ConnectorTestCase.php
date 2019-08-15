@@ -163,7 +163,7 @@ abstract class ConnectorTestCase extends TestCase
         
         if ($clearLinkings) {
             foreach ($convertedModels as $convertedModel) {
-                self::$primaryKeyMapper->delete(
+                $this->primaryKeyMapper->delete(
                     $convertedModel->getId()->getEndpoint(),
                     $convertedModel->getId()->getHost(),
                     IdentityLinker::getInstance()->getType($controllerName, 'id')
