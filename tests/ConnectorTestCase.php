@@ -83,7 +83,11 @@ abstract class ConnectorTestCase extends TestCase
      */
     private function generateClient()
     {
-        $config = json_decode(file_get_contents(__DIR__ . '/test-config.json'));
+        if (!defined('TEST_DIR')) {
+            throw new \InvalidArgumentException('Const TEST_DIR is not defined! Please define it in the bootstrap file!');
+        }
+        
+        $config = json_decode(file_get_contents(TEST_DIR . '/test-config.json'));
         
         return new Client($config->connector_token, $config->connector_url);
     }
