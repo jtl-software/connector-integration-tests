@@ -1,0 +1,24 @@
+{
+    "name": "jtl/connector-integration-tests",
+    "description": "Integration tests for JTL-Connectors",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Benjamin Schaffrath",
+            "email": "benjamin.schaffrath@jtl-software.com"
+        }
+    ],
+    "require": {
+        "jtl/connector-client": "^0.12",
+        "phpunit/phpunit": "^5",
+        "guzzlehttp/guzzle": "^5.3",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ConnectorIntegrationTests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev"
+}
