@@ -27,11 +27,12 @@ abstract class ConnectorTestCase extends TestCase
     
     public function __construct($name = null, array $data = [], $dataName = '')
     {
-        if (!defined('PRIMARYKEYMAPPER') || !PRIMARYKEYMAPPER instanceof IPrimaryKeyMapper) {
-            throw new \InvalidArgumentException('Required const PRIMARYKEYMAPPER is missing or not an IPrimaryKeyMapper! Please define it in the bootstrap!');
+        
+        if (!function_exists('getPrimaryKeyMapper')) {
+            throw new \InvalidArgumentException('Required function getPrimaryKeyMapper is missing! Please define it in the bootstrap!');
         }
         
-        $this->primaryKeyMapper = PRIMARYKEYMAPPER;
+        $this->primaryKeyMapper = getPrimaryKeyMapper();
         
         parent::__construct($name, $data, $dataName);
     }

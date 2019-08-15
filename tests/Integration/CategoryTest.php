@@ -26,7 +26,6 @@ class CategoryTest extends ConnectorTestCase
         $category->setIsActive(true);
         $category->setLevel(0);
         $category->setSort(0);
-        
         $this->pushCoreModels([$category], true);
         
     }
