@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ConnectorIntegrationTests\\": "tests/"
+            "ConnectorIntegrationTests\\": "src/"
         }
     },
     "minimum-stability": "dev"
