@@ -125,13 +125,18 @@ abstract class ConnectorTestCase extends TestCase
         return null;
     }
     
+    /**
+     * @param string $controllerName
+     * @param string $endpointId
+     * @param int $hostId
+     */
     protected function deleteModel(string $controllerName, string $endpointId, int $hostId)
     {
         $ack = new Ack();
         $ack->setIdentities(new ArrayCollection([$controllerName => [$endpointId, $hostId]]));
         $this->getConnectorClient()->ack($ack);
-        
-        $this->getConnectorClient()->delete($controllerName, [(new ('jtl\Connector\Model\\'.$controllerName))->setId($endpointId, $hostId)]);
+        $modelName = 'jtl\Connector\Model\\' . $controllerName;
+        $this->getConnectorClient()->delete($controllerName, [(new $modelName)->setId($endpointId, $hostId)]);
     }
     
     /**
