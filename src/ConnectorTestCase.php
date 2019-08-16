@@ -125,20 +125,13 @@ abstract class ConnectorTestCase extends TestCase
         return null;
     }
     
-    protected function deleteModel(string $controllerName, array $ids)
+    protected function deleteModel(string $controllerName, string $endpointId, int $hostId)
     {
-        $hostId = 10000;
         $ack = new Ack();
-        $ids = [];
-        foreach ($ids as $id) {
-            $ids[] = [$id, $hostId++];
-        }
-        $ack->setIdentities(new ArrayCollection([$controllerName => $ids]));
+        $ack->setIdentities(new ArrayCollection([$controllerName => [$endpointId, $hostId]]));
         $this->getConnectorClient()->ack($ack);
         
-        for ($i = 10000; $i <= $hostId; $i++) {
-            //$this->getConnectorClient()->delete($controllerName, $i)
-        }
+        $this->getConnectorClient()->delete($controllerName, [(new ('jtl\Connector\Model\\'.$controllerName)->setId($endpointId, $hostId))]);
     }
     
     /**
@@ -146,6 +139,7 @@ abstract class ConnectorTestCase extends TestCase
      * @param bool $clearLinkings
      * @return array
      * @throws \ReflectionException
+     * @throws \jtl\Connector\Exception\LinkerException
      */
     protected function pushCoreModels(array $models, bool $clearLinkings)
     {
@@ -156,11 +150,10 @@ abstract class ConnectorTestCase extends TestCase
         $controllerName = (new \ReflectionClass($models[0]))->getShortName();
         $client = $this->getConnectorClient();
         
-        $convertedModels = $this->jsonToCoreModels(json_encode($client->push($controllerName, $models)),
-            $controllerName);
+        $models = $client->push($controllerName, $models);
         
         if ($clearLinkings) {
-            foreach ($convertedModels as $convertedModel) {
+            foreach ($models as $convertedModel) {
                 $this->primaryKeyMapper->delete(
                     $convertedModel->getId()->getEndpoint(),
                     $convertedModel->getId()->getHost(),
@@ -169,7 +162,7 @@ abstract class ConnectorTestCase extends TestCase
             }
         }
         
-        return $convertedModels;
+        return $models;
     }
     
     /**

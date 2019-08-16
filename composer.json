@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "jtl/connector-client": "^0.12",
+        "jtl/connector-client": "^0.13",
         "phpunit/phpunit": "^5",
         "guzzlehttp/guzzle": "^5.3",
         "ext-json": "*"
