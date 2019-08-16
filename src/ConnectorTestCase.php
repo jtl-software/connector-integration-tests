@@ -27,11 +27,12 @@ abstract class ConnectorTestCase extends TestCase
     
     public function __construct($name = null, array $data = [], $dataName = '')
     {
-        if (!defined('PRIMARYKEYMAPPER') || !PRIMARYKEYMAPPER instanceof IPrimaryKeyMapper) {
-            throw new \InvalidArgumentException('Required const PRIMARYKEYMAPPER is missing or not an IPrimaryKeyMapper! Please define it in the bootstrap!');
+        
+        if (!function_exists('getPrimaryKeyMapper')) {
+            throw new \InvalidArgumentException('Required function getPrimaryKeyMapper is missing! Please define it in the bootstrap!');
         }
         
-        $this->primaryKeyMapper = PRIMARYKEYMAPPER;
+        $this->primaryKeyMapper = getPrimaryKeyMapper();
         
         parent::__construct($name, $data, $dataName);
     }
@@ -50,8 +51,6 @@ abstract class ConnectorTestCase extends TestCase
         
         return $this;
     }
-    
-    
     
     /**
      * @return IPrimaryKeyMapper
@@ -82,7 +81,11 @@ abstract class ConnectorTestCase extends TestCase
      */
     private function generateClient()
     {
-        $config = json_decode(file_get_contents(__DIR__ . '/test-config.json'));
+        if (!defined('TEST_DIR')) {
+            throw new \InvalidArgumentException('Const TEST_DIR is not defined! Please define it in the bootstrap file!');
+        }
+        
+        $config = json_decode(file_get_contents(TEST_DIR . '/test-config.json'));
         
         return new Client($config->connector_token, $config->connector_url);
     }
@@ -122,20 +125,13 @@ abstract class ConnectorTestCase extends TestCase
         return null;
     }
     
-    protected function deleteModel(string $controllerName, array $ids)
+    protected function deleteModel(string $controllerName, string $endpointId, int $hostId)
     {
-        $hostId = 10000;
         $ack = new Ack();
-        $ids = [];
-        foreach ($ids as $id) {
-            $ids[] = [$id, $hostId++];
-        }
-        $ack->setIdentities(new ArrayCollection([$controllerName => $ids]));
+        $ack->setIdentities(new ArrayCollection([$controllerName => [$endpointId, $hostId]]));
         $this->getConnectorClient()->ack($ack);
         
-        for($i = 10000; $i <= $hostId; $i++) {
-            //$this->getConnectorClient()->delete($controllerName, $i)
-        }
+        $this->getConnectorClient()->delete($controllerName, [(new ('jtl\Connector\Model\\'.$controllerName))->setId($endpointId, $hostId)]);
     }
     
     /**
@@ -143,6 +139,7 @@ abstract class ConnectorTestCase extends TestCase
      * @param bool $clearLinkings
      * @return array
      * @throws \ReflectionException
+     * @throws \jtl\Connector\Exception\LinkerException
      */
     protected function pushCoreModels(array $models, bool $clearLinkings)
     {
@@ -153,12 +150,11 @@ abstract class ConnectorTestCase extends TestCase
         $controllerName = (new \ReflectionClass($models[0]))->getShortName();
         $client = $this->getConnectorClient();
         
-        $convertedModels = $this->jsonToCoreModels(json_encode($client->push($controllerName, $models)),
-            $controllerName);
+        $models = $client->push($controllerName, $models);
         
         if ($clearLinkings) {
-            foreach ($convertedModels as $convertedModel) {
-                self::$primaryKeyMapper->delete(
+            foreach ($models as $convertedModel) {
+                $this->primaryKeyMapper->delete(
                     $convertedModel->getId()->getEndpoint(),
                     $convertedModel->getId()->getHost(),
                     IdentityLinker::getInstance()->getType($controllerName, 'id')
@@ -166,7 +162,7 @@ abstract class ConnectorTestCase extends TestCase
             }
         }
         
-        return $convertedModels;
+        return $models;
     }
     
     /**
@@ -174,30 +170,32 @@ abstract class ConnectorTestCase extends TestCase
      * @param DataModel $expected
      * @param array|null $assertArray
      */
-    protected function assertCoreModel(DataModel $actual, DataModel $expected, array $assertArray = null, array $ignore = [])
+    protected function assertCoreModel(DataModel $actual, DataModel $expected)
     {
-        //$expected->toJson()
+        $ignoreArray = $this->getIgnoreArray();
         
-        if (empty($assertArray)) {
-            $this->assertEquals($expected, $actual);
-            
-            return;
-        }
+        $actualArray = json_decode(json_encode($actual), true);
+        $expectedArray = json_decode(json_encode($expected), true);
         
-        $ignore = ['customerId'];
-        
-        $valid = [
-            'assertEquals',
-            'assertSame',
-        ];
-        
-        foreach ($assertArray as $name => $assertion) {
-            $assertMethod = "assert" . ucfirst($assertion);
-            $getMethod = "get" . ucfirst($name);
-            
-            if (array_search($assertMethod, $valid) !== false) {
-                $this->$assertMethod($actual->$getMethod(), $expected->$getMethod());
+        foreach ($ignoreArray as $value) {
+            $path = explode('.', $value);
+            if (count($path) > 1) {
+                $tmpActual = &$actualArray;
+                $tmpExpected = &$expectedArray;
+                
+                for ($i = 0; $i < count($path) - 1; $i++) {
+                    $tmpActual = &$tmpActual[$path[$i]];
+                    $tmpExpected = &$tmpExpected[$path[$i]];
+                }
+                unset($tmpActual[$path[$i]]);
+                unset($tmpExpected[$path[$i]]);
+                
+            } else {
+                unset($actualArray[$path[0]]);
+                unset($expectedArray[$path[0]]);
             }
         }
+        
+        $this->assertEquals($expectedArray, $actualArray);
     }
 }

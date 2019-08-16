@@ -22,13 +22,13 @@ class CategoryTest extends ConnectorTestCase
             $i18n->setName('test');
         $category->addI18n($i18n);
         $category->setId(new Identity('', 1));
-        $category->setParentCategoryId(new Identity('', 1));
         $category->setIsActive(true);
         $category->setLevel(0);
         $category->setSort(0);
         
-        $this->pushCoreModels([$category], true);
-        
+        $endpointId = $this->pushCoreModels([$category], true)[0]->getId()->getEndpoint();
+        $result = $this->pullCoreModels('Category', 1, $endpointId);
+        $this->assertCoreModel($category, $result);
     }
     
     public function testCategoryAttributesPush()
@@ -52,7 +52,9 @@ class CategoryTest extends ConnectorTestCase
             $attribute->setI18ns([$i18n]);
         $category->setAttributes([$attribute]);
         
-        $this->pushCoreModels([$category], true);
+        $endpointId = $this->pushCoreModels([$category], true)[0]->getId()->getEndpoint();
+        $result = $this->pullCoreModels('Category', 1, $endpointId);
+        $this->assertCoreModel($category, $result);
     }
     
     public function testCategoryCustomGroupsPush()
@@ -69,7 +71,9 @@ class CategoryTest extends ConnectorTestCase
             $customerGroup->setDiscount(0.0);
         $category->setCustomerGroups([$customerGroup]);
     
-        $this->pushCoreModels([$category], true);
+        $endpointId = $this->pushCoreModels([$category], true)[0]->getId()->getEndpoint();
+        $result = $this->pullCoreModels('Category', 1, $endpointId);
+        $this->assertCoreModel($category, $result);
     }
     
     public function testCategoryI18nsPush()
@@ -86,7 +90,9 @@ class CategoryTest extends ConnectorTestCase
             $i18n->setUrlPath('');
         $category->addI18n($i18n);
     
-        $this->pushCoreModels([$category], true);
+        $endpointId = $this->pushCoreModels([$category], true)[0]->getId()->getEndpoint();
+        $result = $this->pullCoreModels('Category', 1, $endpointId);
+        $this->assertCoreModel($category, $result);
     }
     
     public function testCategoryInvisibilitiesPush()
@@ -102,7 +108,9 @@ class CategoryTest extends ConnectorTestCase
             $invisibility->setCustomerGroupId(new Identity('', 1));
         $category->setInvisibilities([$invisibility]);
     
-        $this->pushCoreModels([$category], true);
+        $endpointId = $this->pushCoreModels([$category], true)[0]->getId()->getEndpoint();
+        $result = $this->pullCoreModels('Category', 1, $endpointId);
+        $this->assertCoreModel($category, $result);
     }
     
     public function getIgnoreArray()

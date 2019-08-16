@@ -10,14 +10,14 @@
         }
     ],
     "require": {
-        "jtl/connector-client": "^0.12",
+        "jtl/connector-client": "^0.13",
         "phpunit/phpunit": "^5",
         "guzzlehttp/guzzle": "^5.3",
         "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
-            "ConnectorIntegrationTests\\": "tests/"
+            "ConnectorIntegrationTests\\": "src/"
         }
     },
     "minimum-stability": "dev"
