@@ -52,8 +52,6 @@ abstract class ConnectorTestCase extends TestCase
         return $this;
     }
     
-    
-    
     /**
      * @return IPrimaryKeyMapper
      */
@@ -138,7 +136,7 @@ abstract class ConnectorTestCase extends TestCase
         $ack->setIdentities(new ArrayCollection([$controllerName => $ids]));
         $this->getConnectorClient()->ack($ack);
         
-        for($i = 10000; $i <= $hostId; $i++) {
+        for ($i = 10000; $i <= $hostId; $i++) {
             //$this->getConnectorClient()->delete($controllerName, $i)
         }
     }
@@ -183,28 +181,28 @@ abstract class ConnectorTestCase extends TestCase
     {
         $ignoreArray = $this->getIgnoreArray();
         
-        $actualArray = json_decode($actual->toJson());
-        $expectedArray = json_decode($expected->toJson());
-    
+        $actualArray = json_decode(json_encode($actual), true);
+        $expectedArray = json_decode(json_encode($expected), true);
+        
         foreach ($ignoreArray as $value) {
             $path = explode('.', $value);
             if (count($path) > 1) {
                 $tmpActual = &$actualArray;
                 $tmpExpected = &$expectedArray;
-            
-                for ($i = 0; $i < count($path)-1; $i++) {
+                
+                for ($i = 0; $i < count($path) - 1; $i++) {
                     $tmpActual = &$tmpActual[$path[$i]];
                     $tmpExpected = &$tmpExpected[$path[$i]];
                 }
                 unset($tmpActual[$path[$i]]);
                 unset($tmpExpected[$path[$i]]);
-            
+                
             } else {
                 unset($actualArray[$path[0]]);
                 unset($expectedArray[$path[0]]);
             }
         }
-    
+        
         $this->assertEquals($expectedArray, $actualArray);
     }
 }
