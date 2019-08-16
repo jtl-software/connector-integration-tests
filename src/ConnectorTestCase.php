@@ -179,30 +179,32 @@ abstract class ConnectorTestCase extends TestCase
      * @param DataModel $expected
      * @param array|null $assertArray
      */
-    protected function assertCoreModel(DataModel $actual, DataModel $expected, array $assertArray = null, array $ignore = [])
+    protected function assertCoreModel(DataModel $actual, DataModel $expected)
     {
-        //$expected->toJson()
+        $ignoreArray = $this->getIgnoreArray();
         
-        if (empty($assertArray)) {
-            $this->assertEquals($expected, $actual);
+        $actualArray = json_decode($actual->toJson());
+        $expectedArray = json_decode($expected->toJson());
+    
+        foreach ($ignoreArray as $value) {
+            $path = explode('.', $value);
+            if (count($path) > 1) {
+                $tmpActual = &$actualArray;
+                $tmpExpected = &$expectedArray;
             
-            return;
-        }
-        
-        $ignore = ['customerId'];
-        
-        $valid = [
-            'assertEquals',
-            'assertSame',
-        ];
-        
-        foreach ($assertArray as $name => $assertion) {
-            $assertMethod = "assert" . ucfirst($assertion);
-            $getMethod = "get" . ucfirst($name);
+                for ($i = 0; $i < count($path)-1; $i++) {
+                    $tmpActual = &$tmpActual[$path[$i]];
+                    $tmpExpected = &$tmpExpected[$path[$i]];
+                }
+                unset($tmpActual[$path[$i]]);
+                unset($tmpExpected[$path[$i]]);
             
-            if (array_search($assertMethod, $valid) !== false) {
-                $this->$assertMethod($actual->$getMethod(), $expected->$getMethod());
+            } else {
+                unset($actualArray[$path[0]]);
+                unset($expectedArray[$path[0]]);
             }
         }
+    
+        $this->assertEquals($expectedArray, $actualArray);
     }
 }
