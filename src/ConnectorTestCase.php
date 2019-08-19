@@ -131,8 +131,7 @@ abstract class ConnectorTestCase extends TestCase
         $ack->setIdentities(new ArrayCollection([$controllerName => [$endpointId, $hostId]]));
         $this->getConnectorClient()->ack($ack);
         
-        $className = 'jtl\Connector\Model\\' . $controllerName;
-        $this->getConnectorClient()->delete($controllerName, [(new $className)->setId($endpointId, $hostId)]);
+        $this->getConnectorClient()->delete($controllerName, [(new ('jtl\Connector\Model\\'.$controllerName))->setId($endpointId, $hostId)]);
     }
     
     /**
