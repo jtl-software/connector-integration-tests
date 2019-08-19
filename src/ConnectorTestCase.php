@@ -1,6 +1,6 @@
 <?php
 
-namespace ConnectorIntegrationTests;
+namespace Jtl\Connector\IntegrationTests;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use jtl\Connector\Linker\IdentityLinker;

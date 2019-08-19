@@ -1,8 +1,7 @@
 <?php
+namespace Jtl\Connector\IntegrationTests\Integration;
 
-namespace ConnectorIntegrationTests\Integration;
-
-use ConnectorIntegrationTests\ConnectorTestCase;
+use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use jtl\Connector\Model\Category;
 use jtl\Connector\Model\CategoryAttr;
 use jtl\Connector\Model\CategoryAttrI18n;

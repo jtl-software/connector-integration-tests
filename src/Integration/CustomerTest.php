@@ -1,8 +1,7 @@
 <?php
+namespace Jtl\Connector\IntegrationTests\Integration;
 
-namespace ConnectorIntegrationTests\Integration;
-
-use ConnectorIntegrationTests\ConnectorTestCase;
+use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use DateTime;
 use jtl\Connector\Model\Customer;
 use jtl\Connector\Model\Identity;
