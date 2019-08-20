@@ -8,7 +8,7 @@ use jtl\Connector\Model\Identity;
 use jtl\Connector\Model\CustomerAttr;
 
 
-class CustomerTest extends ConnectorTestCase
+abstract class CustomerTest extends ConnectorTestCase
 {
     public function testCustomerBasicPush()
     {
@@ -58,10 +58,5 @@ class CustomerTest extends ConnectorTestCase
         $customer->addAttribute($attribute);
     
         $this->pushCoreModels([$customer], true);
-    }
-    
-    public function getIgnoreArray()
-    {
-        // TODO: Implement getIgnoreArray() method.
     }
 }

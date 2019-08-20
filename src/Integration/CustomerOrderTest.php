@@ -12,7 +12,7 @@ use jtl\Connector\Model\CustomerOrderShippingAddress;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\Model\CustomerOrderAttr;
 
-class CustomerOrderTest extends ConnectorTestCase
+abstract class CustomerOrderTest extends ConnectorTestCase
 {
     public function testCustomerOrderBasicPush()
     {
@@ -160,10 +160,5 @@ class CustomerOrderTest extends ConnectorTestCase
         $customerOrder->addItem($item);
     
         $this->pushCoreModels([$customerOrder], true);
-    }
-    
-    public function getIgnoreArray()
-    {
-        // TODO: Implement getIgnoreArray() method.
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Jtl\Connector\IntegrationTests\Integration;
 
+use jtl\Connector\Exception\LinkerException;
 use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use DateTime;
 use jtl\Connector\Model\Checksum;
@@ -38,22 +39,48 @@ use jtl\Connector\Model\ProductVariationValueI18n;
 use jtl\Connector\Model\ProductVariationValueInvisibility;
 use jtl\Connector\Model\ProductWarehouseInfo;
 
-class ProductTest extends ConnectorTestCase
+abstract class ProductTest extends ConnectorTestCase
 {
+    /**
+     * @param Product $product
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
+    protected function push(Product $product)
+    {
+        $productI18n = new ProductI18n();
+        $productI18n->setProductId(new Identity('', $this->hostId));
+        $productI18n->setDeliveryStatus('');
+        $productI18n->setDescription('Beschreibung');
+        $productI18n->setLanguageISO('de');
+        $productI18n->setMeasurementUnitName('');
+        $productI18n->setMetaDescription('metaDescription');
+        $productI18n->setMetaKeywords('metaKeywords');
+        $productI18n->setName('testartikel');
+        $productI18n->setShortDescription('Kurze Beschreibung');
+        $productI18n->setTitleTag('Titel Tag');
+        $productI18n->setUnitName('');
+        $productI18n->setUrlPath('');
+        $product->setI18ns([$productI18n]);
+        
+        $product->setId(new Identity('', $this->hostId));
+        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
+        $this->assertNotEmpty($endpointId);
+        $result = $this->pullCoreModels('Product', 1, $endpointId);
+        $this->assertCoreModel($product, $result);
+        $this->deleteModel('Product', $endpointId, $this->hostId);
+    }
+    
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductBasicPush()
     {
         $product = new Product();
         $product->setBasePriceUnitId(new Identity('', 1));
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
-        $product->setManufacturerId(new Identity('', 1));
-        $product->setMasterProductId(new Identity('', 1));
-        $product->setMeasurementUnitId(new Identity('', 1));
-        $product->setPartsListId(new Identity('', 1));
-        $product->setProductTypeId(new Identity('', 1));
-        $product->setShippingClassId(new Identity('', 1));
-        $product->setUnitId(new Identity('', 1));
         $product->setAsin('');
         $product->setAvailableFrom(new DateTime());
         $product->setBasePriceDivisor(0.0);
@@ -69,7 +96,7 @@ class ProductTest extends ConnectorTestCase
         $product->setEpid('');
         $product->setHazardIdNumber('');
         $product->setHeight(0.0);
-        $product->setIsActive(false);
+        $product->setIsActive(true);
         $product->setIsBatch(false);
         $product->setIsBestBefore(false);
         $product->setIsbn('');
@@ -84,7 +111,7 @@ class ProductTest extends ConnectorTestCase
         $product->setMeasurementQuantity(0.0);
         $product->setMeasurementUnitCode('');
         $product->setMinBestBeforeDate(new DateTime());
-        $product->setMinimumOrderQuantity(0.0);
+        $product->setMinimumOrderQuantity(1);
         $product->setMinimumQuantity(0.0);
         $product->setModified(new DateTime());
         $product->setNewReleaseDate(new DateTime());
@@ -109,14 +136,15 @@ class ProductTest extends ConnectorTestCase
         $product->setVat(0.0);
         $product->setWidth(0.0);
         
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductManufacturerPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $manufacturer = new Manufacturer();
@@ -134,35 +162,37 @@ class ProductTest extends ConnectorTestCase
         $manufacturerI18n->setTitleTag('');
         $manufacturer->setI18ns([$manufacturerI18n]);
         $product->setManufacturer($manufacturer);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductStockLevelPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $stockLevel = new ProductStockLevel();
-        $stockLevel->setProductId(new Identity('', 1));
+        $stockLevel->setProductId(new Identity('', $this->hostId));
         $stockLevel->setStockLevel(0.0);
         $product->setStockLevel($stockLevel);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductAttributePush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $attribute = new ProductAttr();
         $attribute->setId(new Identity('', 1));
-        $attribute->setProductId(new Identity('', 1));
+        $attribute->setProductId(new Identity('', $this->hostId));
         $attribute->setIsCustomProperty(false);
         $attribute->setIsTranslated(false);
         $attributeI18n = new ProductAttrI18n();
@@ -172,31 +202,33 @@ class ProductTest extends ConnectorTestCase
         $attributeI18n->setValue('');
         $attribute->setI18ns([$attributeI18n]);
         $product->setAttributes([$attribute]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductToCategoryPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $productsToCategories = new Product2Category();
         $productsToCategories->setCategoryId(new Identity('', 1));
         $productsToCategories->setId(new Identity('', 1));
-        $productsToCategories->setProductId(new Identity('', 1));
+        $productsToCategories->setProductId(new Identity('', $this->hostId));
         $product->setCategories([$productsToCategories]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductChecksumPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $checksum = new Checksum();
@@ -206,53 +238,56 @@ class ProductTest extends ConnectorTestCase
         $checksum->setHost('');
         $checksum->setType(0);
         $product->setChecksums([$checksum]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductConfigGroupPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $configGroup = new ProductConfigGroup();
         $configGroup->setConfigGroupId(new Identity('', 1));
-        $configGroup->setProductId(new Identity('', 1));
+        $configGroup->setProductId(new Identity('', $this->hostId));
         $configGroup->setSort(0);
         $product->setConfigGroups([$configGroup]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductCustomerGroupPackagingQuantityPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $packagingQuantity = new CustomerGroupPackagingQuantity();
         $packagingQuantity->setCustomerGroupId(new Identity('', 1));
-        $packagingQuantity->setProductId(new Identity('', 1));
+        $packagingQuantity->setProductId(new Identity('', $this->hostId));
         $packagingQuantity->setMinimumOrderQuantity(0.0);
         $packagingQuantity->setPackagingQuantity(0.0);
         $product->setCustomerGroupPackagingQuantities([$packagingQuantity]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductFileUploadPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $fileUpload = new FileUpload();
         $fileUpload->setId(new Identity('', 1));
-        $fileUpload->setProductId(new Identity('', 1));
+        $fileUpload->setProductId(new Identity('', $this->hostId));
         $fileUpload->setFileType('');
         $fileUpload->setIsRequired(false);
         $fileUploadI18n = new FileUploadI18n();
@@ -262,60 +297,37 @@ class ProductTest extends ConnectorTestCase
         $fileUploadI18n->setName('');
         $fileUpload->setI18ns([$fileUploadI18n]);
         $product->setFileDownloads([$fileUpload]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
-    public function testProductI18nPush(){
-        $product = new Product();
-        $product->setId(new Identity('', 1));
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $productI18n = new ProductI18n();
-        $productI18n->setProductId(new Identity('', 1));
-        $productI18n->setDeliveryStatus('');
-        $productI18n->setDescription('');
-        $productI18n->setLanguageISO('');
-        $productI18n->setMeasurementUnitName('');
-        $productI18n->setMetaDescription('');
-        $productI18n->setMetaKeywords('');
-        $productI18n->setName('');
-        $productI18n->setShortDescription('');
-        $productI18n->setTitleTag('');
-        $productI18n->setUnitName('');
-        $productI18n->setUrlPath('');
-        $product->setI18ns([$productI18n]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
-    }
-    
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductInvisibilityPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $invisibility = new ProductInvisibility();
         $invisibility->setCustomerGroupId(new Identity('', 1));
-        $invisibility->setProductId(new Identity('', 1));
+        $invisibility->setProductId(new Identity('', $this->hostId));
         $product->setInvisibilities([$invisibility]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductMediaFilePush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $mediaFile = new ProductMediaFile();
         $mediaFile->setId(new Identity('', 1));
-        $mediaFile->setProductId(new Identity('', 1));
+        $mediaFile->setProductId(new Identity('', $this->hostId));
         $mediaFile->setMediaFileCategory('');
         $mediaFile->setPath('');
         $mediaFile->setSort(0);
@@ -336,58 +348,61 @@ class ProductTest extends ConnectorTestCase
         $mediaFileI18n->setName('');
         $mediaFile->setI18ns([$mediaFileI18n]);
         $product->setMediaFiles([$mediaFile]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductPartsListPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $partsList= new ProductPartsList();
         $partsList->setId(new Identity('', 1));
-        $partsList->setProductId(new Identity('', 1));
+        $partsList->setProductId(new Identity('', $this->hostId));
         $partsList->setQuantity(0.0);
         $product->setPartsLists([$partsList]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductPricePush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $price = new ProductPrice();
         $price->setCustomerGroupId(new Identity('', 1));
         $price->setCustomerId(new Identity('', 1));
         $price->setId(new Identity('', 1));
-        $price->setProductId(new Identity('', 1));
+        $price->setProductId(new Identity('', $this->hostId));
         $priceItem = new ProductPriceItem();
         $priceItem->setProductPriceId(new Identity('', 1));
         $priceItem->setNetPrice(0.0);
         $priceItem->setQuantity(0);
         $price->setItems([$priceItem]);
         $product->setPrices([$price]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductSpecialPricePush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $specialPrice = new ProductSpecialPrice();
         $specialPrice->setId(new Identity('', 1));
-        $specialPrice->setProductId(new Identity('', 1));
+        $specialPrice->setProductId(new Identity('', $this->hostId));
         $specialPrice->setActiveFromDate(new DateTime());
         $specialPrice->setActiveUntilDate(new DateTime());
         $specialPrice->setConsiderDateLimit(false);
@@ -400,52 +415,55 @@ class ProductTest extends ConnectorTestCase
         $specialPriceItem->setPriceNet(0.0);
         $specialPrice->setItems([$specialPriceItem]);
         $product->setSpecialPrices([$specialPrice]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductSpecificPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $specific = new ProductSpecific();
         $specific->setId(new Identity('', 1));
-        $specific->setProductId(new Identity('', 1));
+        $specific->setProductId(new Identity('', $this->hostId));
         $specific->setSpecificValueId(new Identity('', 1));
         $product->setSpecifics([$specific]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductVarCombinationPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $varCombination = new ProductVarCombination();
-        $varCombination->setProductId(new Identity('', 1));
+        $varCombination->setProductId(new Identity('', $this->hostId));
         $varCombination->setProductVariationId(new Identity('', 1));
         $varCombination->setProductVariationValueId(new Identity('', 1));
         $product->setVarCombinations([$varCombination]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductVariationPush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $variation = new ProductVariation();
         $variation->setId(new Identity('', 1));
-        $variation->setProductId(new Identity('', 1));
+        $variation->setProductId(new Identity('', $this->hostId));
         $variation->setSort(0);
         $variation->setType('');
         $variationI18n = new ProductVariationI18n();
@@ -481,31 +499,25 @@ class ProductTest extends ConnectorTestCase
         $variationValue->setInvisibilities([$variationValueInvisibility]);
         $variation->setValues([$variationValue]);
         $product->setVariations([$variation]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
+    
+        $this->push($product);
     }
     
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testProductWarehousePush(){
         $product = new Product();
-        $product->setId(new Identity('', 1));
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $warehouseInfo = new ProductWarehouseInfo();
-        $warehouseInfo->setProductId(new Identity('', 1));
+        $warehouseInfo->setProductId(new Identity('', $this->hostId));
         $warehouseInfo->setwarehouseId(new Identity('', 1));
         $warehouseInfo->setInflowQuantity(0.0);
         $warehouseInfo->setstockLevel(0.0);
         $product->setWarehouseInfo([$warehouseInfo]);
-        
-        $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
-        $result = $this->pullCoreModels('Product', 1, $endpointId);
-        $this->assertCoreModel($product, $result);
-    }
     
-    public function getIgnoreArray()
-    {
-        // TODO: Implement getIgnoreArray() method.
+        $this->push($product);
     }
 }

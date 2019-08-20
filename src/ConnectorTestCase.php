@@ -15,6 +15,7 @@ use Jtl\Connector\Client\Client;
 
 abstract class ConnectorTestCase extends TestCase
 {
+    protected $hostId = 1;
     /**
      * @var Client
      */

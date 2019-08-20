@@ -10,7 +10,7 @@ use jtl\Connector\Model\DeliveryNoteItemInfo;
 use jtl\Connector\Model\DeliveryNoteTrackingList;
 use jtl\Connector\Model\Identity;
 
-class DeliveryNoteTest extends ConnectorTestCase
+abstract class DeliveryNoteTest extends ConnectorTestCase
 {
     public function testDeliveryNoteBasicPush()
     {
@@ -53,10 +53,5 @@ class DeliveryNoteTest extends ConnectorTestCase
         $deliveryNote->addTrackingList($trackingList);
         
         $this->pushCoreModels([$deliveryNote], true);
-    }
-    
-    public function getIgnoreArray()
-    {
-        // TODO: Implement getIgnoreArray() method.
     }
 }

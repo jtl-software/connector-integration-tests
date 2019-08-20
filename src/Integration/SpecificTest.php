@@ -8,7 +8,7 @@ use jtl\Connector\Model\SpecificI18n;
 use jtl\Connector\Model\SpecificValue;
 use jtl\Connector\Model\SpecificValueI18n;
 
-class SpecificTest extends ConnectorTestCase
+abstract class SpecificTest extends ConnectorTestCase
 {
     public function testSpecificBasicPush()
     {
@@ -63,10 +63,5 @@ class SpecificTest extends ConnectorTestCase
         $specific->addValue($value);
     
         $this->pushCoreModels([$specific], true);
-    }
-    
-    public function getIgnoreArray()
-    {
-        // TODO: Implement getIgnoreArray() method.
     }
 }
