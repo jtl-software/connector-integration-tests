@@ -1,6 +1,6 @@
 <?php
 
-namespace ConnectorIntegrationTests;
+namespace Jtl\Connector\IntegrationTests;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use jtl\Connector\Linker\IdentityLinker;
@@ -135,8 +135,8 @@ abstract class ConnectorTestCase extends TestCase
         $ack = new Ack();
         $ack->setIdentities(new ArrayCollection([$controllerName => [$endpointId, $hostId]]));
         $this->getConnectorClient()->ack($ack);
-        $modelName = 'jtl\Connector\Model\\' . $controllerName;
-        $this->getConnectorClient()->delete($controllerName, [(new $modelName)->setId($endpointId, $hostId)]);
+        $className = 'jtl\Connector\Model\\'.$controllerName;
+        $this->getConnectorClient()->delete($controllerName, [(new $className)->setId($endpointId, $hostId)]);
     }
     
     /**
@@ -175,12 +175,12 @@ abstract class ConnectorTestCase extends TestCase
      * @param DataModel $expected
      * @param array|null $assertArray
      */
-    protected function assertCoreModel(DataModel $actual, DataModel $expected)
+    protected function assertCoreModel(DataModel $expected, DataModel $actual)
     {
         $ignoreArray = $this->getIgnoreArray();
         
-        $actualArray = json_decode(json_encode($actual), true);
-        $expectedArray = json_decode(json_encode($expected), true);
+        $actualArray = json_decode($actual->toJson(), true);
+        $expectedArray = json_decode($expected->toJson(), true);
         
         foreach ($ignoreArray as $value) {
             $path = explode('.', $value);

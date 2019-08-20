@@ -1,8 +1,7 @@
 <?php
+namespace Jtl\Connector\IntegrationTests\Integration;
 
-namespace ConnectorIntegrationTests\Integration;
-
-use ConnectorIntegrationTests\ConnectorTestCase;
+use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\Model\Specific;
 use jtl\Connector\Model\SpecificI18n;
