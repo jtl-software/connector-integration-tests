@@ -7,6 +7,7 @@ use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Mapper\IPrimaryKeyMapper;
 use jtl\Connector\Model\Ack;
 use jtl\Connector\Model\DataModel;
+use jtl\Connector\Model\Identity;
 use jtl\Connector\Serializer\JMS\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 use Jtl\Connector\Client\Client;
@@ -134,10 +135,15 @@ abstract class ConnectorTestCase extends TestCase
     protected function deleteModel(string $controllerName, string $endpointId, int $hostId)
     {
         $ack = new Ack();
-        $ack->setIdentities(new ArrayCollection([$controllerName => [$endpointId, $hostId]]));
+        $collection = new ArrayCollection();
+        $idCollection = new ArrayCollection();
+        $idCollection->add(new Identity($endpointId, $hostId));
+        $collection->set($controllerName, $idCollection);
+        $ack->setIdentities($collection);
+        
         $this->getConnectorClient()->ack($ack);
         $className = 'jtl\Connector\Model\\'.$controllerName;
-        $this->getConnectorClient()->delete($controllerName, [(new $className)->setId($endpointId, $hostId)]);
+        $this->getConnectorClient()->delete($controllerName, [(new $className)->setId(new Identity($endpointId, $hostId))]);
     }
     
     /**
