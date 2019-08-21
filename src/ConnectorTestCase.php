@@ -183,6 +183,7 @@ abstract class ConnectorTestCase extends TestCase
         $actualArray = json_decode($actual->toJson(), true);
         $expectedArray = json_decode($expected->toJson(), true);
         
+        
         foreach ($ignoreArray as $value) {
             $path = explode('.', $value);
             if (count($path) > 1) {
@@ -202,6 +203,20 @@ abstract class ConnectorTestCase extends TestCase
             }
         }
         
+        $this->recursive_unset($actualArray, 'id');
+        $this->recursive_unset($expectedArray, 'id');
+        
         $this->assertEquals($expectedArray, $actualArray);
+    }
+    
+    protected function recursive_unset(&$array, $unwanted_key) {
+        
+        foreach ($array as $key => &$value) {
+            if (stripos($key, $unwanted_key) !== false) {
+                unset($array[$key]);
+            } elseif (is_array($value)) {
+                $this->recursive_unset($value, $unwanted_key);
+            }
+        }
     }
 }

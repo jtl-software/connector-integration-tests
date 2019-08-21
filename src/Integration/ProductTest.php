@@ -82,7 +82,7 @@ abstract class ProductTest extends ConnectorTestCase
         $product->setStockLevel(new ProductStockLevel());
         $product->addPrice(new ProductPrice());
         $product->setAsin('');
-        $product->setAvailableFrom(new DateTime());
+        $product->setAvailableFrom('2019-08-21T00:00:00+0200');
         $product->setBasePriceDivisor(0.0);
         $product->setBasePriceFactor(0.0);
         $product->setBasePriceQuantity(0.0);
