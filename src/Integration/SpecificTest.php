@@ -1,4 +1,5 @@
 <?php
+
 namespace Jtl\Connector\IntegrationTests\Integration;
 
 use Jtl\Connector\IntegrationTests\ConnectorTestCase;
@@ -10,58 +11,49 @@ use jtl\Connector\Model\SpecificValueI18n;
 
 abstract class SpecificTest extends ConnectorTestCase
 {
+    public function push(Specific $specific)
+    {
+        $i18n = new SpecificI18n();
+        $i18n->setSpecificId(new Identity('', 1));
+        $i18n->setLanguageISO('ger');
+        $i18n->setName('Specific Name');
+        $specific->setI18ns([$i18n]);
+        $specific->setType('string');
+        $specific->setId(new Identity('', $this->hostId));
+        
+        $endpointId = $this->pushCoreModels([$specific], true)[0]->getId()->getEndpoint();
+        $this->assertNotEmpty($endpointId);
+        $result = $this->pullCoreModels('Specific', 1, $endpointId);
+        $this->assertCoreModel($specific, $result);
+        $this->deleteModel('Specific', $endpointId, $this->hostId);
+    }
     public function testSpecificBasicPush()
     {
         $specific = new Specific();
-            $i18n = new SpecificI18n();
-            $i18n->setSpecificId(new Identity('', 1));
-            $i18n->setLanguageISO('ger');
-            $i18n->setName('');
-        $specific->addI18n($i18n);
-        $specific->setId(new Identity('', 1));
         $specific->setIsGlobal(true);
         $specific->setSort(0);
-        $specific->setType('');
         
-        $this->pushCoreModels([$specific], true);
-    }
-    
-    public function testSpecificI18nPush()
-    {
-        $specific = new Specific();
-            $i18n = new SpecificI18n();
-            $i18n->setSpecificId(new Identity('', 1));
-            $i18n->setLanguageISO('ger');
-            $i18n->setName('');
-        $specific->addI18n($i18n);
-    
-        $this->pushCoreModels([$specific], true);
+        $this->push($specific);
     }
     
     public function testSpecificValuesPush()
     {
         $specific = new Specific();
-            $i18n = new SpecificI18n();
-            $i18n->setSpecificId(new Identity('', 1));
-            $i18n->setLanguageISO('ger');
-            $i18n->setName('');
-        $specific->addI18n($i18n);
-            $value = new SpecificValue();
-            $value->setId(new Identity('', 1));
-            $value->setSpecificId(new Identity('', 1));
-            $value->setSort(0);
-                $i18n = new SpecificValueI18n();
-                $i18n->setSpecificValueId(new Identity('', 1));
-                $i18n->setDescription('');
-                $i18n->setLanguageISO('ger');
-                $i18n->setMetaDescription('');
-                $i18n->setMetaKeywords('');
-                $i18n->setTitleTag('');
-                $i18n->setUrlPath('');
-                $i18n->setValue('');
-            $value->addI18n($i18n);
+        $value = new SpecificValue();
+        $value->setSpecificId(new Identity('', $this->hostId));
+        $value->setSort(0);
+        $specificValueI18n = new SpecificValueI18n();
+        $specificValueI18n->setSpecificValueId(new Identity('', 1));
+        $specificValueI18n->setDescription('Specific Beschreibung');
+        $specificValueI18n->setLanguageISO('ger');
+        $specificValueI18n->setMetaDescription('Meta Beschreibung');
+        $specificValueI18n->setMetaKeywords('Meta Keywords');
+        $specificValueI18n->setTitleTag('Title Tag');
+        $specificValueI18n->setUrlPath('URL Pfad');
+        $specificValueI18n->setValue('Value Value');
+        $value->addI18n($specificValueI18n);
         $specific->addValue($value);
-    
-        $this->pushCoreModels([$specific], true);
+        
+        $this->push($specific);
     }
 }

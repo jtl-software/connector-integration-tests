@@ -59,7 +59,7 @@ abstract class ManufacturerTest extends ConnectorTestCase
         $i18n->setMetaKeywords('metaKeywords');
         $i18n->setTitleTag('titleTag');
         $manufacturer->addI18n($i18n);
-    
+        
         $this->push($manufacturer);
     }
 }
