@@ -155,7 +155,7 @@ abstract class ProductTest extends ConnectorTestCase
         $product->setTaric('Test');
         $product->setUnNumber('Test');
         $product->setUpc('123456789012');
-        $product->setVat(33.56);
+        $product->setVat(19);
         $product->setWidth(33.56);
         
         $this->push($product);
