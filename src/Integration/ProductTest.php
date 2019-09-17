@@ -59,7 +59,7 @@ abstract class ProductTest extends ConnectorTestCase
         $productI18n->setDeliveryStatus('Done');
         $productI18n->setDescription('Beschreibung');
         $productI18n->setLanguageISO('ger');
-        $productI18n->setMeasurementUnitName('');
+        $productI18n->setMeasurementUnitName('g');
         $productI18n->setMetaDescription('metaDescription');
         $productI18n->setMetaKeywords('metaKeywords');
         $productI18n->setName('testartikel');
@@ -483,6 +483,20 @@ abstract class ProductTest extends ConnectorTestCase
         $priceItem->setQuantity(23);
         $price->setItems([$priceItem]);
         $parent->setPrices([$price]);
+        $productI18n = new ProductI18n();
+        $productI18n->setProductId(new Identity('', $this->hostId));
+        $productI18n->setDeliveryStatus('Done');
+        $productI18n->setDescription('Beschreibung');
+        $productI18n->setLanguageISO('ger');
+        $productI18n->setMeasurementUnitName('g');
+        $productI18n->setMetaDescription('metaDescription');
+        $productI18n->setMetaKeywords('metaKeywords');
+        $productI18n->setName('testartikel');
+        $productI18n->setShortDescription('Kurze Beschreibung');
+        $productI18n->setTitleTag('Titel Tag');
+        $productI18n->setUnitName('Test');
+        $productI18n->setUrlPath('Test URL');
+        $parent->setI18ns([$productI18n]);
         $parent->setMinimumOrderQuantity(1);
         $parent->setIsMasterProduct(true);
         $variation = new ProductVariation();
@@ -515,6 +529,7 @@ abstract class ProductTest extends ConnectorTestCase
         $child->setId(new Identity('', 2));
         $child->setStockLevel(new ProductStockLevel());
         $child->setPrices([$price]);
+        $child->setI18ns([$productI18n]);
         $child->setMinimumOrderQuantity(1);
         $child->setIsMasterProduct(false);
         $child->setMasterProductId(new Identity('', $this->hostId));
