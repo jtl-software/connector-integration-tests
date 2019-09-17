@@ -58,7 +58,7 @@ abstract class ProductTest extends ConnectorTestCase
         $productI18n->setProductId(new Identity('', $this->hostId));
         $productI18n->setDeliveryStatus('Done');
         $productI18n->setDescription('Beschreibung');
-        $productI18n->setLanguageISO('de');
+        $productI18n->setLanguageISO('ger');
         $productI18n->setMeasurementUnitName('');
         $productI18n->setMetaDescription('metaDescription');
         $productI18n->setMetaKeywords('metaKeywords');
@@ -552,7 +552,7 @@ abstract class ProductTest extends ConnectorTestCase
         $variation->setType('SELECTBOX');
         $variationI18n = new ProductVariationI18n();
         $variationI18n->setProductVariationId(new Identity('', 1));
-        $variationI18n->setLanguageISO('de');
+        $variationI18n->setLanguageISO('ger');
         $variationI18n->setName('Produktvariation');
         $variation->setI18ns([$variationI18n]);
         $variationValue = new ProductVariationValue();
@@ -565,7 +565,7 @@ abstract class ProductTest extends ConnectorTestCase
         $variationValue->setStockLevel(22);
         $variationValueI18n = new ProductVariationValueI18n();
         $variationValueI18n->setProductVariationValueId(new Identity('', 1));
-        $variationValueI18n->setLanguageISO('de');
+        $variationValueI18n->setLanguageISO('ger');
         $variationValueI18n->setName('Wert der Produktvariation');
         $variationValue->setI18ns([$variationValueI18n]);
         $variation->setValues([$variationValue]);
