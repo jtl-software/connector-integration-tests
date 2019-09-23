@@ -14,9 +14,8 @@ abstract class DeliveryNoteTest extends ConnectorTestCase
 {
     public function testDeliveryNoteBasicPush()
     {
-        $deliveryNote = new DeliveryNote();
-        
-        $deliveryNote->setCustomerOrderId(new Identity('', 1))
+        $deliveryNote = (new DeliveryNote())
+            ->setCustomerOrderId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setCreationDate(new DateTime())
             ->setIsFulfillment(true)
@@ -29,15 +28,15 @@ abstract class DeliveryNoteTest extends ConnectorTestCase
     {
         $deliveryNote = new DeliveryNote();
         
-        $item = new DeliveryNoteItem();
-        $item->setCustomerOrderItemId(new Identity('', 1))
+        $item = (new DeliveryNoteItem())
+            ->setCustomerOrderItemId(new Identity('', 1))
             ->setDeliveryNoteId(new Identity('', 1))
             ->setProductId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setQuantity(0.0);
         
-        $info = new DeliveryNoteItemInfo();
-        $info->setBatch('')
+        $info = (new DeliveryNoteItemInfo())
+            ->setBatch('')
             ->setBestBefore(new DateTime())
             ->setQuantity(0.0)
             ->setWarehouseId(0);
@@ -52,8 +51,8 @@ abstract class DeliveryNoteTest extends ConnectorTestCase
     {
         $deliveryNote = new DeliveryNote();
         
-        $trackingList = new DeliveryNoteTrackingList();
-        $trackingList->setName('')
+        $trackingList = (new DeliveryNoteTrackingList())
+            ->setName('')
             ->addCode('');
         $deliveryNote->addTrackingList($trackingList);
         

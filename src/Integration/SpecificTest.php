@@ -13,8 +13,8 @@ abstract class SpecificTest extends ConnectorTestCase
 {
     public function push(Specific $specific)
     {
-        $i18n = new SpecificI18n();
-        $i18n->setSpecificId(new Identity('', 1))
+        $i18n = (new SpecificI18n())
+            ->setSpecificId(new Identity('', 1))
             ->setLanguageISO('ger')
             ->setName('Specific Name');
         
@@ -31,8 +31,8 @@ abstract class SpecificTest extends ConnectorTestCase
     
     public function testSpecificBasicPush()
     {
-        $specific = new Specific();
-        $specific->setIsGlobal(true)
+        $specific = (new Specific())
+            ->setIsGlobal(true)
             ->setSort(0);
         
         $this->push($specific);
@@ -42,12 +42,12 @@ abstract class SpecificTest extends ConnectorTestCase
     {
         $specific = new Specific();
         
-        $value = new SpecificValue();
-        $value->setSpecificId(new Identity('', $this->hostId))
+        $value = (new SpecificValue())
+            ->setSpecificId(new Identity('', $this->hostId))
             ->setSort(0);
         
-        $specificValueI18n = new SpecificValueI18n();
-        $specificValueI18n->setSpecificValueId(new Identity('', 1))
+        $specificValueI18n = (new SpecificValueI18n())
+            ->setSpecificValueId(new Identity('', 1))
             ->setDescription('Specific Beschreibung')
             ->setLanguageISO('ger')
             ->setMetaDescription('Meta Beschreibung')

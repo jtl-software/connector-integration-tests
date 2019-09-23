@@ -12,8 +12,8 @@ abstract class CustomerTest extends ConnectorTestCase
 {
     public function testCustomerBasicPush()
     {
-        $customer = new Customer();
-        $customer->setCustomerGroupId(new Identity('', 1))
+        $customer = (new Customer())
+            ->setCustomerGroupId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setAccountCredit(0.0)
             ->setBirthday(new DateTime())
@@ -51,8 +51,8 @@ abstract class CustomerTest extends ConnectorTestCase
     public function testCustomerAttributePush()
     {
         $customer = new Customer();
-        $attribute = new CustomerAttr();
-        $attribute->setCustomerId(new Identity('', 1))
+        $attribute = (new CustomerAttr())
+            ->setCustomerId(new Identity('', 1))
             ->setKey('')
             ->setValue('');
         $customer->addAttribute($attribute);

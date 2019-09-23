@@ -36,8 +36,8 @@ abstract class CategoryTest extends ConnectorTestCase
     public function testCategoryBasicPush()
     {
         $category = new Category();
-        $i18n = new CategoryI18n();
-        $i18n->setLanguageISO('ger')
+        $i18n = (new CategoryI18n())
+            ->setLanguageISO('ger')
             ->setName('test')
             ->setUrlPath('test')
             ->setCategoryId(new Identity('', 1));
@@ -55,21 +55,21 @@ abstract class CategoryTest extends ConnectorTestCase
     public function testCategoryAttributesPush()
     {
         $category = new Category();
-        $i18n = new CategoryI18n();
-        $i18n->setCategoryId(new Identity('', 1))
+        $i18n = (new CategoryI18n())
+            ->setCategoryId(new Identity('', 1))
             ->setLanguageISO('ger')
             ->setName('test')
             ->setUrlPath('test');
         $category->addI18n($i18n);
         
-        $attribute = new CategoryAttr();
-        $attribute->setCategoryId(new Identity('', 1))
+        $attribute = (new CategoryAttr())
+            ->setCategoryId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setIsCustomProperty(true)
             ->setIsTranslated(true);
         
-        $i18n = new CategoryAttrI18n();
-        $i18n->setCategoryAttrId(new Identity('', 1))
+        $i18n = (new CategoryAttrI18n())
+            ->setCategoryAttrId(new Identity('', 1))
             ->setLanguageISO('ger')
             ->setName('test')
             ->setValue('test');
@@ -87,15 +87,15 @@ abstract class CategoryTest extends ConnectorTestCase
     {
         $category = new Category();
         
-        $i18n = new CategoryI18n();
-        $i18n->setCategoryId(new Identity('', 1))
+        $i18n = (new CategoryI18n())
+            ->setCategoryId(new Identity('', 1))
             ->setLanguageISO('ger')
             ->setName('test')
             ->setUrlPath('test');
         $category->addI18n($i18n);
         
-        $customerGroup = new CategoryCustomerGroup();
-        $customerGroup->setCategoryId(new Identity('', 1))
+        $customerGroup = (new CategoryCustomerGroup())
+            ->setCategoryId(new Identity('', 1))
             ->setCustomerGroupId(new Identity('', 1))
             ->setDiscount(3.44);
         $category->addCustomerGroup($customerGroup);
@@ -111,8 +111,8 @@ abstract class CategoryTest extends ConnectorTestCase
     {
         $category = new Category();
         
-        $i18n = new CategoryI18n();
-        $i18n->setCategoryId(new Identity('', 1))
+        $i18n = (new CategoryI18n())
+            ->setCategoryId(new Identity('', 1))
             ->setDescription('test')
             ->setLanguageISO('ger')
             ->setMetaDescription('test')
@@ -133,15 +133,15 @@ abstract class CategoryTest extends ConnectorTestCase
     {
         $category = new Category();
         
-        $i18n = new CategoryI18n();
-        $i18n->setCategoryId(new Identity('', 1))
+        $i18n = (new CategoryI18n())
+            ->setCategoryId(new Identity('', 1))
             ->setLanguageISO('ger')
             ->setName('test')
             ->setUrlPath('test');
         $category->addI18n($i18n);
         
-        $invisibility = new CategoryInvisibility();
-        $invisibility->setCategoryId(new Identity('', 1))
+        $invisibility = (new CategoryInvisibility())
+            ->setCategoryId(new Identity('', 1))
             ->setCustomerGroupId(new Identity('', 1));
         $category->addInvisibility($invisibility);
         

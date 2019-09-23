@@ -31,14 +31,14 @@ abstract class ManufacturerTest extends ConnectorTestCase
      */
     public function testManufacturerBasicPush()
     {
-        $manufacturer = new Manufacturer();
-        $manufacturer->setName('Test')
+        $manufacturer = (new Manufacturer())
+            ->setName('Test')
             ->setSort(0)
             ->setUrlPath('')
             ->setWebsiteUrl('');
         
-        $i18n = new ManufacturerI18n();
-        $i18n->setManufacturerId(new Identity('', $this->hostId))
+        $i18n = (new ManufacturerI18n())
+            ->setManufacturerId(new Identity('', $this->hostId))
             ->setLanguageISO('ger');
         
         $manufacturer->addI18n($i18n);
@@ -52,10 +52,11 @@ abstract class ManufacturerTest extends ConnectorTestCase
      */
     public function testManufacturerI18nPush()
     {
-        $manufacturer = new Manufacturer();
-        $manufacturer->setName('Test');
-        $i18n = new ManufacturerI18n();
-        $i18n->setManufacturerId(new Identity('', $this->hostId))
+        $manufacturer = (new Manufacturer())
+            ->setName('Test');
+        
+        $i18n = (new ManufacturerI18n())
+            ->setManufacturerId(new Identity('', $this->hostId))
             ->setDescription('TEST')
             ->setLanguageISO('ger')
             ->setMetaDescription('metaDescription')

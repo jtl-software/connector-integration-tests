@@ -17,8 +17,8 @@ abstract class CustomerOrderTest extends ConnectorTestCase
 {
     public function testCustomerOrderBasicPush()
     {
-        $customerOrder = new CustomerOrder();
-        $customerOrder->setCustomerId(new Identity('', 1))
+        $customerOrder = (new CustomerOrder())
+            ->setCustomerId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setCarrierName('')
             ->setCreationDate(new DateTime())
@@ -46,8 +46,8 @@ abstract class CustomerOrderTest extends ConnectorTestCase
     {
         $customerOrder = new CustomerOrder();
         
-        $billingAddress = new CustomerOrderBillingAddress();
-        $billingAddress->setCustomerId(new Identity('', 1))
+        $billingAddress = (new CustomerOrderBillingAddress())
+            ->setCustomerId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setCity('')
             ->setCompany('')
@@ -75,8 +75,8 @@ abstract class CustomerOrderTest extends ConnectorTestCase
     {
         $customerOrder = new CustomerOrder();
         
-        $paymentInfo = new CustomerOrderPaymentInfo();
-        $paymentInfo->setCustomerOrderId(new Identity('', 1))
+        $paymentInfo = (new CustomerOrderPaymentInfo())
+            ->setCustomerOrderId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setAccountHolder('')
             ->setAccountNumber('')
@@ -98,8 +98,8 @@ abstract class CustomerOrderTest extends ConnectorTestCase
     {
         $customerOrder = new CustomerOrder();
         
-        $shippingAddress = new CustomerOrderShippingAddress();
-        $shippingAddress->setCustomerId(new Identity('', 1))
+        $shippingAddress = (new CustomerOrderShippingAddress())
+            ->setCustomerId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setCity('')
             ->setCompany('')
@@ -126,8 +126,8 @@ abstract class CustomerOrderTest extends ConnectorTestCase
     {
         $customerOrder = new CustomerOrder();
         
-        $attribute = new CustomerOrderAttr();
-        $attribute->setCustomerOrderId(new Identity('', 1))
+        $attribute = (new CustomerOrderAttr())
+            ->setCustomerOrderId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setKey('')
             ->setValue('');
@@ -140,8 +140,8 @@ abstract class CustomerOrderTest extends ConnectorTestCase
     {
         $customerOrder = new CustomerOrder();
         
-        $item = new CustomerOrderItem();
-        $item->setConfigItemId(new Identity('', 1))
+        $item = (new CustomerOrderItem())
+            ->setConfigItemId(new Identity('', 1))
             ->setCustomerOrderId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setProductId(new Identity('', 1))
@@ -155,8 +155,8 @@ abstract class CustomerOrderTest extends ConnectorTestCase
             ->setUnique('')
             ->setVat(0.0);
         
-        $itemVariation = new CustomerOrderItemVariation();
-        $itemVariation->setCustomerOrderItemId(new Identity('', 1))
+        $itemVariation = (new CustomerOrderItemVariation())
+            ->setCustomerOrderItemId(new Identity('', 1))
             ->setId(new Identity('', 1))
             ->setProductVariationId(new Identity('', 1))
             ->setProductVariationValueId(new Identity('', 1))
