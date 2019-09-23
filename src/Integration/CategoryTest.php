@@ -1,4 +1,5 @@
 <?php
+
 namespace Jtl\Connector\IntegrationTests\Integration;
 
 use jtl\Connector\Exception\LinkerException;
@@ -36,14 +37,14 @@ abstract class CategoryTest extends ConnectorTestCase
     {
         $category = new Category();
         $i18n = new CategoryI18n();
-        $i18n->setLanguageISO('ger');
-        $i18n->setName('test');
-        $i18n->setUrlPath('test');
-        $category->addI18n($i18n);
-        $category->setIsActive(true);
-        $category->setLevel(5);
-        $category->setSort(3);
-        $i18n->setCategoryId(new Identity('', 1));
+        $i18n->setLanguageISO('ger')
+            ->setName('test')
+            ->setUrlPath('test')
+            ->setCategoryId(new Identity('', 1));
+        $category->addI18n($i18n)
+            ->setIsActive(true)
+            ->setLevel(5)
+            ->setSort(3);
         $this->push($category);
     }
     
@@ -55,22 +56,25 @@ abstract class CategoryTest extends ConnectorTestCase
     {
         $category = new Category();
         $i18n = new CategoryI18n();
-        $i18n->setCategoryId(new Identity('', 1));
-        $i18n->setLanguageISO('ger');
-        $i18n->setName('test');
-        $i18n->setUrlPath('test');
+        $i18n->setCategoryId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('test')
+            ->setUrlPath('test');
         $category->addI18n($i18n);
+        
         $attribute = new CategoryAttr();
-        $attribute->setCategoryId(new Identity('', 1));
-        $attribute->setId(new Identity('', 1));
-        $attribute->setIsCustomProperty(true);
-        $attribute->setIsTranslated(true);
+        $attribute->setCategoryId(new Identity('', 1))
+            ->setId(new Identity('', 1))
+            ->setIsCustomProperty(true)
+            ->setIsTranslated(true);
+        
         $i18n = new CategoryAttrI18n();
-        $i18n->setCategoryAttrId(new Identity('', 1));
-        $i18n->setLanguageISO('ger');
-        $i18n->setName('test');
-        $i18n->setValue('test');
+        $i18n->setCategoryAttrId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('test')
+            ->setValue('test');
         $attribute->addI18n($i18n);
+        
         $category->addAttribute($attribute);
         $this->push($category);
     }
@@ -82,17 +86,20 @@ abstract class CategoryTest extends ConnectorTestCase
     public function testCategoryCustomGroupsPush()
     {
         $category = new Category();
+        
         $i18n = new CategoryI18n();
-        $i18n->setCategoryId(new Identity('', 1));
-        $i18n->setLanguageISO('ger');
-        $i18n->setName('test');
-        $i18n->setUrlPath('test');
+        $i18n->setCategoryId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('test')
+            ->setUrlPath('test');
         $category->addI18n($i18n);
+        
         $customerGroup = new CategoryCustomerGroup();
-        $customerGroup->setCategoryId(new Identity('', 1));
-        $customerGroup->setCustomerGroupId(new Identity('', 1));
-        $customerGroup->setDiscount(3.44);
+        $customerGroup->setCategoryId(new Identity('', 1))
+            ->setCustomerGroupId(new Identity('', 1))
+            ->setDiscount(3.44);
         $category->addCustomerGroup($customerGroup);
+        
         $this->push($category);
     }
     
@@ -103,16 +110,18 @@ abstract class CategoryTest extends ConnectorTestCase
     public function testCategoryI18nsPush()
     {
         $category = new Category();
+        
         $i18n = new CategoryI18n();
-        $i18n->setCategoryId(new Identity('', 1));
-        $i18n->setDescription('test');
-        $i18n->setLanguageISO('ger');
-        $i18n->setMetaDescription('test');
-        $i18n->setMetaKeywords('test');
-        $i18n->setName('test');
-        $i18n->setTitleTag('test');
-        $i18n->setUrlPath('test');
+        $i18n->setCategoryId(new Identity('', 1))
+            ->setDescription('test')
+            ->setLanguageISO('ger')
+            ->setMetaDescription('test')
+            ->setMetaKeywords('test')
+            ->setName('test')
+            ->setTitleTag('test')
+            ->setUrlPath('test');
         $category->addI18n($i18n);
+        
         $this->push($category);
     }
     
@@ -123,16 +132,19 @@ abstract class CategoryTest extends ConnectorTestCase
     public function testCategoryInvisibilitiesPush()
     {
         $category = new Category();
+        
         $i18n = new CategoryI18n();
-        $i18n->setCategoryId(new Identity('', 1));
-        $i18n->setLanguageISO('ger');
-        $i18n->setName('test');
-        $i18n->setUrlPath('test');
+        $i18n->setCategoryId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('test')
+            ->setUrlPath('test');
         $category->addI18n($i18n);
+        
         $invisibility = new CategoryInvisibility();
-        $invisibility->setCategoryId(new Identity('', 1));
-        $invisibility->setCustomerGroupId(new Identity('', 1));
+        $invisibility->setCategoryId(new Identity('', 1))
+            ->setCustomerGroupId(new Identity('', 1));
         $category->addInvisibility($invisibility);
+        
         $this->push($category);
     }
 }
