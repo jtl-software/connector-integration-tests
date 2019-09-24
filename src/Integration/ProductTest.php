@@ -117,7 +117,7 @@ abstract class ProductTest extends ConnectorTestCase
         $product->setIsActive(true);
         $product->setIsBatch(false);
         $product->setIsBestBefore(false);
-        $product->setIsbn('');
+        $product->setIsbn('978-1692748777');
         $product->setIsDivisible(false);
         $product->setIsMasterProduct(false);
         $product->setIsNewProduct(false);
