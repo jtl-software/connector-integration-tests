@@ -247,7 +247,7 @@ abstract class ProductTest extends ConnectorTestCase
         $i18n = new CategoryI18n();
         $i18n->setLanguageISO('ger');
         $i18n->setName('test');
-        $i18n->setUrlPath('test');
+        $i18n->setUrlPath('test-url');
         $i18n->setCategoryId(new Identity('', 1));
         $category->addI18n($i18n);
         $category->setId(new Identity('', 1));
