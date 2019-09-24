@@ -125,7 +125,7 @@ abstract class ProductTest extends ConnectorTestCase
             ->setIsBestBefore(true)
             ->setIsbn('978-1692748777')
             ->setIsDivisible(true)
-            ->setIsMasterProduct(true)
+            ->setIsMasterProduct(false)
             ->setIsNewProduct(true)
             ->setIsSerialNumber(true)
             ->setIsTopProduct(true)
