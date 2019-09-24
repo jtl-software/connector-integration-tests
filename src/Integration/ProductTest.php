@@ -39,6 +39,10 @@ use jtl\Connector\Model\ProductVariationValueExtraCharge;
 use jtl\Connector\Model\ProductVariationValueI18n;
 use jtl\Connector\Model\ProductVariationValueInvisibility;
 use jtl\Connector\Model\ProductWarehouseInfo;
+use jtl\Connector\Model\Specific;
+use jtl\Connector\Model\SpecificI18n;
+use jtl\Connector\Model\SpecificValue;
+use jtl\Connector\Model\SpecificValueI18n;
 use jtl\Connector\Type\Category;
 
 abstract class ProductTest extends ConnectorTestCase
@@ -50,30 +54,32 @@ abstract class ProductTest extends ConnectorTestCase
      */
     protected function push(Product $product)
     {
-        $productI18n = new ProductI18n();
-        $productI18n->setProductId(new Identity('', $this->hostId));
-        $productI18n->setDeliveryStatus('');
-        $productI18n->setDescription('Beschreibung');
-        $productI18n->setLanguageISO('de');
-        $productI18n->setMeasurementUnitName('');
-        $productI18n->setMetaDescription('metaDescription');
-        $productI18n->setMetaKeywords('metaKeywords');
-        $productI18n->setName('testartikel');
-        $productI18n->setShortDescription('Kurze Beschreibung');
-        $productI18n->setTitleTag('Titel Tag');
-        $productI18n->setUnitName('');
-        $productI18n->setUrlPath('');
+        $productI18n = (new ProductI18n())
+            ->setProductId(new Identity('', $this->hostId))
+            ->setDeliveryStatus('Done')
+            ->setDescription('Beschreibung')
+            ->setLanguageISO('ger')
+            ->setMeasurementUnitName('')
+            ->setMetaDescription('metaDescription')
+            ->setMetaKeywords('metaKeywords')
+            ->setName('testartikel')
+            ->setShortDescription('Kurze Beschreibung')
+            ->setTitleTag('Titel Tag')
+            ->setUnitName('Test')
+            ->setUrlPath('test-url');
         $product->setI18ns([$productI18n]);
         
-        $price = new ProductPrice();
-        $price->setCustomerGroupId(new Identity('', 1));
-        $price->setCustomerId(new Identity('', 1));
-        $price->setId(new Identity('', 1));
-        $price->setProductId(new Identity('', $this->hostId));
-        $priceItem = new ProductPriceItem();
-        $priceItem->setProductPriceId(new Identity('', 1));
-        $priceItem->setNetPrice(0.0);
-        $priceItem->setQuantity(0);
+        $price = (new ProductPrice())
+            ->setCustomerGroupId(new Identity('', 1))
+            ->setCustomerId(new Identity('', 1))
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId));
+        
+        $priceItem = (new ProductPriceItem())
+            ->setProductPriceId(new Identity('', 1))
+            ->setNetPrice(32.51)
+            ->setQuantity(33);
+        
         $price->setItems([$priceItem]);
         $product->setPrices([$price]);
         
@@ -95,64 +101,64 @@ abstract class ProductTest extends ConnectorTestCase
      */
     public function testProductBasicPush()
     {
-        $product = new Product();
-        $product->setBasePriceUnitId(new Identity('', 1));
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $product->setAsin('');
-        $product->setAvailableFrom(new DateTime('2019-08-21T00:00:00+0200'));
-        $product->setBasePriceDivisor(0.0);
-        $product->setBasePriceFactor(0.0);
-        $product->setBasePriceQuantity(0.0);
-        $product->setBasePriceUnitCode('');
-        $product->setBasePriceUnitName('');
-        $product->setConsiderBasePrice(false);
-        $product->setConsiderStock(false);
-        $product->setConsiderVariationStock(false);
-        $product->setCreationDate(new DateTime());
-        $product->setEan('');
-        $product->setEpid('');
-        $product->setHazardIdNumber('');
-        $product->setHeight(0.0);
-        $product->setIsActive(true);
-        $product->setIsBatch(false);
-        $product->setIsBestBefore(false);
-        $product->setIsbn('978-1692748777');
-        $product->setIsDivisible(false);
-        $product->setIsMasterProduct(false);
-        $product->setIsNewProduct(false);
-        $product->setIsSerialNumber(false);
-        $product->setIsTopProduct(false);
-        $product->setKeywords('');
-        $product->setLength(0.0);
-        $product->setManufacturerNumber('');
-        $product->setMeasurementQuantity(0.0);
-        $product->setMeasurementUnitCode('');
-        $product->setMinBestBeforeDate(new DateTime());
-        $product->setMinimumOrderQuantity(1);
-        $product->setMinimumQuantity(0);
-        $product->setModified(new DateTime());
-        $product->setNewReleaseDate(new DateTime());
-        $product->setNextAvailableInflowDate(new DateTime());
-        $product->setNextAvailableInflowQuantity(0.0);
-        $product->setNote('');
-        $product->setOriginCountry('');
-        $product->setPackagingQuantity(0.0);
-        $product->setPermitNegativeStock(false);
-        $product->setProductWeight(0.0);
-        $product->setPurchasePrice(0.0);
-        $product->setRecommendedRetailPrice(0.0);
-        $product->setSerialNumber('');
-        $product->setShippingWeight(0.0);
-        $product->setSku('');
-        $product->setSort(0);
-        $product->setSupplierDeliveryTime(0);
-        $product->setSupplierStockLevel(0.0);
-        $product->setTaric('');
-        $product->setUnNumber('');
-        $product->setUpc('');
-        $product->setVat(0.0);
-        $product->setWidth(0.0);
+        $product = (new Product())
+            ->setBasePriceUnitId(new Identity('', 1))
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice())
+            ->setAsin('B07K199T2Y')
+            ->setAvailableFrom(new DateTime('2019-08-21T00:00:00+0200'))
+            ->setBasePriceDivisor(33.56)
+            ->setBasePriceFactor(33.56)
+            ->setBasePriceQuantity(33.56)
+            ->setBasePriceUnitCode('Test')
+            ->setBasePriceUnitName('Test')
+            ->setConsiderBasePrice(true)
+            ->setConsiderStock(true)
+            ->setConsiderVariationStock(true)
+            ->setCreationDate(new DateTime('2019-08-21T00:00:00+0200'))
+            ->setEan('1234567890123')
+            ->setEpid('Test')
+            ->setHazardIdNumber('Test')
+            ->setHeight(33.56)
+            ->setIsActive(true)
+            ->setIsBatch(true)
+            ->setIsBestBefore(true)
+            ->setIsbn('978-1692748777')
+            ->setIsDivisible(true)
+            ->setIsMasterProduct(true)
+            ->setIsNewProduct(true)
+            ->setIsSerialNumber(true)
+            ->setIsTopProduct(true)
+            ->setKeywords('Test')
+            ->setLength(33.56)
+            ->setManufacturerNumber('Test')
+            ->setMeasurementQuantity(33.56)
+            ->setMeasurementUnitCode('Test')
+            ->setMinBestBeforeDate(new DateTime())
+            ->setMinimumOrderQuantity(1)
+            ->setMinimumQuantity(64)
+            ->setModified(new DateTime())
+            ->setNewReleaseDate(new DateTime())
+            ->setNextAvailableInflowDate(new DateTime())
+            ->setNextAvailableInflowQuantity(33.56)
+            ->setNote('Test')
+            ->setOriginCountry('Test')
+            ->setPackagingQuantity(33.56)
+            ->setPermitNegativeStock(true)
+            ->setProductWeight(33.56)
+            ->setPurchasePrice(33.56)
+            ->setRecommendedRetailPrice(33.56)
+            ->setSerialNumber('Test')
+            ->setShippingWeight(33.56)
+            ->setSku('Test')
+            ->setSort(64)
+            ->setSupplierDeliveryTime(64)
+            ->setSupplierStockLevel(33.56)
+            ->setTaric('Test')
+            ->setUnNumber('Test')
+            ->setUpc('123456789012')
+            ->setVat(19)
+            ->setWidth(33.56);
         
         $this->push($product);
     }
@@ -161,45 +167,44 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductManufacturerPush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+    public function testProductManufacturerPush()
+    {
+        $manufacturer = (new Manufacturer())
+            ->setName('Test')
+            ->setSort(64)
+            ->setUrlPath('Test')
+            ->setWebsiteUrl('Test');
         
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $manufacturer = new Manufacturer();
-        $manufacturer->setId(new Identity('', 1));
-        $manufacturer->setName('Hersteller Krause');
-        $manufacturer->setSort(0);
-        $manufacturer->setUrlPath('');
-        $manufacturer->setWebsiteUrl('');
-        $manufacturerI18n = new ManufacturerI18n();
-        $manufacturerI18n->setManufacturerId(new Identity('', 1));
-        $manufacturerI18n->setDescription('Beschreibung von Bauer Weskamp');
-        $manufacturerI18n->setLanguageISO('de');
-        $manufacturerI18n->setMetaDescription('');
-        $manufacturerI18n->setMetaKeywords('');
-        $manufacturerI18n->setTitleTag('');
-        $manufacturer->setI18ns([$manufacturerI18n]);
-        $product->setManufacturer($manufacturer);
-        $manufacturerPush = $this->pushCoreModels([$manufacturer], false);
+        $i18n = (new ManufacturerI18n())
+            ->setManufacturerId(new Identity('', $this->hostId))
+            ->setLanguageISO('ger');
+        
+        $manufacturer->addI18n($i18n);
+        $manufacturerId = $this->pushCoreModels([$manufacturer], false)[0]->getId();
+        
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice())
+            ->setManufacturerId($manufacturerId);
         $this->push($product);
-        $this->deleteModel('manufacturer', $manufacturerPush[0]->getId()->getEndpoint(), 1);
+        
+        $this->deleteModel('manufacturer', $manufacturerId->getEndpoint(), 1);
     }
     
     /**
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductStockLevelPush(){
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $stockLevel = new ProductStockLevel();
-        $stockLevel->setProductId(new Identity('', $this->hostId));
-        $stockLevel->setStockLevel(0.0);
+    public function testProductStockLevelPush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $stockLevel = (new ProductStockLevel())
+            ->setProductId(new Identity('', $this->hostId))
+            ->setStockLevel(33);
+        
         $product->setStockLevel($stockLevel);
         
         $this->push($product);
@@ -209,20 +214,24 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductAttributePush(){
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $attribute = new ProductAttr();
-        $attribute->setId(new Identity('', 1));
-        $attribute->setProductId(new Identity('', $this->hostId));
-        $attribute->setIsCustomProperty(false);
-        $attribute->setIsTranslated(false);
-        $attributeI18n = new ProductAttrI18n();
-        $attributeI18n->setProductAttrId(new Identity('', 1));
-        $attributeI18n->setLanguageISO('');
-        $attributeI18n->setName('');
-        $attributeI18n->setValue('');
+    public function testProductAttributePush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $attribute = (new ProductAttr())
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setIsCustomProperty(true)
+            ->setIsTranslated(true);
+        
+        $attributeI18n = (new ProductAttrI18n())
+            ->setProductAttrId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('Test')
+            ->setValue('Test');
+        
         $attribute->setI18ns([$attributeI18n]);
         $product->setAttributes([$attribute]);
         
@@ -233,27 +242,30 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductToCategoryPush(){
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $productsToCategories = new Product2Category();
-        $productsToCategories->setCategoryId(new Identity('', 1));
-        $productsToCategories->setId(new Identity('', 1));
-        $productsToCategories->setProductId(new Identity('', $this->hostId));
+    public function testProductToCategoryPush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $productsToCategories = (new Product2Category())
+            ->setCategoryId(new Identity('', 1))
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId));
+        
         $product->setCategories([$productsToCategories]);
         
         $category = new \jtl\Connector\Model\Category();
-        $i18n = new CategoryI18n();
-        $i18n->setLanguageISO('ger');
-        $i18n->setName('test');
-        $i18n->setUrlPath('test-url');
-        $i18n->setCategoryId(new Identity('', 1));
-        $category->addI18n($i18n);
-        $category->setId(new Identity('', 1));
-        $category->setIsActive(true);
-        $category->setLevel(5);
-        $category->setSort(3);
+        $i18n = (new CategoryI18n())
+            ->setLanguageISO('ger')
+            ->setName('test')
+            ->setUrlPath('test')
+            ->setCategoryId(new Identity('', 1));
+        $category->addI18n($i18n)
+            ->setId(new Identity('', 1))
+            ->setIsActive(true)
+            ->setLevel(5)
+            ->setSort(3);
         
         $categoryPush = $this->pushCoreModels([$category], false);
         $this->push($product);
@@ -264,40 +276,17 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductChecksumPush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+    public function testProductConfigGroupPush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
         
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $checksum = new Checksum();
-        $checksum->setForeignKey(new Identity('', 1));
-        $checksum->setEndpoint('');
-        $checksum->setHasChanged(false);
-        $checksum->setHost('');
-        $checksum->setType(0);
-        $product->setChecksums([$checksum]);
+        $configGroup = (new ProductConfigGroup())
+            ->setConfigGroupId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setSort(64);
         
-        $this->push($product);
-    }
-    
-    /**
-     * @throws LinkerException
-     * @throws \ReflectionException
-     */
-    public function testProductConfigGroupPush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $configGroup = new ProductConfigGroup();
-        $configGroup->setConfigGroupId(new Identity('', 1));
-        $configGroup->setProductId(new Identity('', $this->hostId));
-        $configGroup->setSort(0);
         $product->setConfigGroups([$configGroup]);
         
         $this->push($product);
@@ -307,18 +296,18 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductCustomerGroupPackagingQuantityPush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $packagingQuantity = new CustomerGroupPackagingQuantity();
-        $packagingQuantity->setCustomerGroupId(new Identity('', 1));
-        $packagingQuantity->setProductId(new Identity('', $this->hostId));
-        $packagingQuantity->setMinimumOrderQuantity(1);
-        $packagingQuantity->setPackagingQuantity(0.0);
+    public function testProductCustomerGroupPackagingQuantityPush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $packagingQuantity = (new CustomerGroupPackagingQuantity())
+            ->setCustomerGroupId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setMinimumOrderQuantity(1)
+            ->setPackagingQuantity(33.56);
+        
         $product->setCustomerGroupPackagingQuantities([$packagingQuantity]);
         
         $this->push($product);
@@ -328,23 +317,28 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductFileUploadPush(){
+    public function testProductFileUploadPush()
+    {
         $this->markTestIncomplete(
             'This test has not been implemented yet.'
         );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $fileUpload = new FileUpload();
-        $fileUpload->setId(new Identity('', 1));
-        $fileUpload->setProductId(new Identity('', $this->hostId));
-        $fileUpload->setFileType('');
-        $fileUpload->setIsRequired(false);
-        $fileUploadI18n = new FileUploadI18n();
-        $fileUploadI18n->setDescription('');
-        $fileUploadI18n->setFileUploadId(0);
-        $fileUploadI18n->setLanguageISO('');
-        $fileUploadI18n->setName('');
+        
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $fileUpload = (new FileUpload())
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setFileType('Test')
+            ->setIsRequired(true);
+        
+        $fileUploadI18n = (new FileUploadI18n())
+            ->setDescription('Test')
+            ->setFileUploadId(64)
+            ->setLanguageISO('ger')
+            ->setName('Test');
+        
         $fileUpload->setI18ns([$fileUploadI18n]);
         $product->setFileDownloads([$fileUpload]);
         
@@ -355,13 +349,16 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductInvisibilityPush(){
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $invisibility = new ProductInvisibility();
-        $invisibility->setCustomerGroupId(new Identity('', 1));
-        $invisibility->setProductId(new Identity('', $this->hostId));
+    public function testProductInvisibilityPush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $invisibility = (new ProductInvisibility())
+            ->setCustomerGroupId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId));
+        
         $product->setInvisibilities([$invisibility]);
         
         $this->push($product);
@@ -371,34 +368,42 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductMediaFilePush(){
+    public function testProductMediaFilePush()
+    {
         $this->markTestIncomplete(
             'This test has not been implemented yet.'
         );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $mediaFile = new ProductMediaFile();
-        $mediaFile->setId(new Identity('', 1));
-        $mediaFile->setProductId(new Identity('', $this->hostId));
-        $mediaFile->setMediaFileCategory('');
-        $mediaFile->setPath('');
-        $mediaFile->setSort(0);
-        $mediaFile->setType('');
-        $mediaFile->setUrl('');
-        $mediaFileAttribute = new ProductMediaFileAttr();
-        $mediaFileAttribute->setProductMediaFileId(new Identity('', 1));
-        $mediaFileAttributeI18n = new ProductMediaFileAttrI18n();
-        $mediaFileAttributeI18n->setLanguageISO('');
-        $mediaFileAttributeI18n->setName('');
-        $mediaFileAttributeI18n->setValue('');
+        
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $mediaFile = (new ProductMediaFile())
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setMediaFileCategory('Test')
+            ->setPath('Test')
+            ->setSort(64)
+            ->setType('Test')
+            ->setUrl('Test');
+        
+        $mediaFileAttribute = (new ProductMediaFileAttr())
+            ->setProductMediaFileId(new Identity('', 1));
+        
+        $mediaFileAttributeI18n = (new ProductMediaFileAttrI18n())
+            ->setLanguageISO('ger')
+            ->setName('Test')
+            ->setValue('Test');
+        
         $mediaFileAttribute->setI18ns([$mediaFileAttributeI18n]);
         $mediaFile->setAttributes([$mediaFileAttribute]);
-        $mediaFileI18n = new ProductMediaFileI18n();
-        $mediaFileI18n->setProductMediaFileId(new Identity('', 1));
-        $mediaFileI18n->setDescription('');
-        $mediaFileI18n->setLanguageISO('');
-        $mediaFileI18n->setName('');
+        
+        $mediaFileI18n = (new ProductMediaFileI18n())
+            ->setProductMediaFileId(new Identity('', 1))
+            ->setDescription('Test')
+            ->setLanguageISO('ger')
+            ->setName('Test');
+        
         $mediaFile->setI18ns([$mediaFileI18n]);
         $product->setMediaFiles([$mediaFile]);
         
@@ -409,18 +414,17 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductPartsListPush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+    public function testProductPartsListPush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
         
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $partsList= new ProductPartsList();
-        $partsList->setId(new Identity('', 1));
-        $partsList->setProductId(new Identity('', $this->hostId));
-        $partsList->setQuantity(0.0);
+        $partsList = (new ProductPartsList())
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setQuantity(33.56);
+        
         $product->setPartsLists([$partsList]);
         
         $this->push($product);
@@ -430,26 +434,27 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductSpecialPricePush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $specialPrice = new ProductSpecialPrice();
-        $specialPrice->setId(new Identity('', 1));
-        $specialPrice->setProductId(new Identity('', $this->hostId));
-        $specialPrice->setActiveFromDate(new DateTime());
-        $specialPrice->setActiveUntilDate(new DateTime());
-        $specialPrice->setConsiderDateLimit(false);
-        $specialPrice->setConsiderStockLimit(false);
-        $specialPrice->setIsActive(false);
-        $specialPrice->setStockLimit(0);
-        $specialPriceItem = new ProductSpecialPriceItem();
-        $specialPriceItem->setCustomerGroupId(new Identity('', 1));
-        $specialPriceItem->setProductSpecialPriceId(new Identity('', 1));
-        $specialPriceItem->setPriceNet(0.0);
+    public function testProductSpecialPricePush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $specialPrice = (new ProductSpecialPrice())
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setActiveFromDate(new DateTime())
+            ->setActiveUntilDate(new DateTime())
+            ->setConsiderDateLimit(true)
+            ->setConsiderStockLimit(true)
+            ->setIsActive(true)
+            ->setStockLimit(64);
+        
+        $specialPriceItem = (new ProductSpecialPriceItem())
+            ->setCustomerGroupId(new Identity('', 1))
+            ->setProductSpecialPriceId(new Identity('', 1))
+            ->setPriceNet(33.56);
+        
         $specialPrice->setItems([$specialPriceItem]);
         $product->setSpecialPrices([$specialPrice]);
         
@@ -460,89 +465,176 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductSpecificPush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $specific = new ProductSpecific();
-        $specific->setId(new Identity('', 1));
-        $specific->setProductId(new Identity('', $this->hostId));
-        $specific->setSpecificValueId(new Identity('', 1));
-        $product->setSpecifics([$specific]);
+    public function testProductSpecificPush()
+    {
+        $specific = new Specific();
+        
+        $i18n = (new SpecificI18n())
+            ->setSpecificId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('Specific Name');
+        
+        $specific->setI18ns([$i18n])
+            ->setType('string')
+            ->setId(new Identity('', $this->hostId));
+        
+        $value = (new SpecificValue())
+            ->setSpecificId(new Identity('', $this->hostId))
+            ->setSort(64);
+        
+        $specificValueI18n = (new SpecificValueI18n())
+            ->setSpecificValueId(new Identity('', 1))
+            ->setDescription('Specific Beschreibung')
+            ->setLanguageISO('ger')
+            ->setMetaDescription('Meta Beschreibung')
+            ->setMetaKeywords('Meta Keywords')
+            ->setTitleTag('Title Tag')
+            ->setUrlPath('URL Pfad')
+            ->setValue('Value Value');
+        
+        $value->addI18n($specificValueI18n);
+        $specific->addValue($value);
+        
+        $specificId = $this->pushCoreModels([$specific], false)[0]->getId();
+        
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $productSpecific = (new ProductSpecific())
+            ->setId(new Identity('', $this->hostId))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setSpecificValueId($specificId);
+        
+        $product->setSpecifics([$productSpecific]);
         
         $this->push($product);
+        
+        $this->deleteModel('specific', $specificId->getEndpoint(), 1);
     }
     
     /**
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductVarCombinationPush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $varCombination = new ProductVarCombination();
-        $varCombination->setProductId(new Identity('', $this->hostId));
-        $varCombination->setProductVariationId(new Identity('', 1));
-        $varCombination->setProductVariationValueId(new Identity('', 1));
-        $product->setVarCombinations([$varCombination]);
+    public function testProductVarCombinationPush()
+    {
+        $parent = (new Product())
+            ->setId(new Identity('', $this->hostId))
+            ->setStockLevel(new ProductStockLevel());
         
-        $this->push($product);
-    }
-    
-    /**
-     * @throws LinkerException
-     * @throws \ReflectionException
-     */
-    public function testProductVariationPush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $variation = new ProductVariation();
-        $variation->setId(new Identity('', 1));
-        $variation->setProductId(new Identity('', $this->hostId));
-        $variation->setSort(0);
-        $variation->setType('SELECTBOX');
-        $variationI18n = new ProductVariationI18n();
-        $variationI18n->setProductVariationId(new Identity('', 1));
-        $variationI18n->setLanguageISO('de');
-        $variationI18n->setName('Produktvariation');
+        $price = (new ProductPrice())
+            ->setCustomerGroupId(new Identity('', 1))
+            ->setCustomerId(new Identity('', 1))
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId));
+        
+        $priceItem = (new ProductPriceItem())
+            ->setProductPriceId(new Identity('', 1))
+            ->setNetPrice(44.52)
+            ->setQuantity(23);
+        
+        $price->setItems([$priceItem]);
+        $parent->setPrices([$price]);
+        
+        $parent->setMinimumOrderQuantity(1);
+        $parent->setIsMasterProduct(true);
+        
+        $variation = (new ProductVariation())
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setSort(64)
+            ->setType('SELECTBOX');
+        
+        $variationI18n = (new ProductVariationI18n())
+            ->setProductVariationId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('Produktvariation');
+        
         $variation->setI18ns([$variationI18n]);
-        $variationValue = new ProductVariationValue();
-        $variationValue->setId(new Identity('', 1));
-        $variationValue->setProductVariationId(new Identity('', 1));
-        $variationValue->setEan('');
-        $variationValue->setExtraWeight(0.0);
-        $variationValue->setSku('');
-        $variationValue->setSort(0);
-        $variationValue->setStockLevel(22);
-        $variationValueI18n = new ProductVariationValueI18n();
-        $variationValueI18n->setProductVariationValueId(new Identity('', 1));
-        $variationValueI18n->setLanguageISO('de');
-        $variationValueI18n->setName('Wert der Produktvariation');
+        
+        $variationValue = (new ProductVariationValue())
+            ->setId(new Identity('', 1))
+            ->setProductVariationId(new Identity('', 1))
+            ->setEan('1234567890123')
+            ->setExtraWeight(3)
+            ->setSku('TEST')
+            ->setSort(4)
+            ->setStockLevel(22);
+        
+        $variationValueI18n = (new ProductVariationValueI18n())
+            ->setProductVariationValueId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('Wert der Produktvariation');
+        
         $variationValue->setI18ns([$variationValueI18n]);
-        /*$variationInvisibility = new ProductVariationInvisibility();
-        $variationInvisibility->setCustomerGroupId(new Identity('', 1));
-        $variationInvisibility->setProductVariationId(new Identity('', 1));
-        $variation->setInvisibilities([$variationInvisibility]);
-        $variationValueExtraCharge = new ProductVariationValueExtraCharge();
-        $variationValueExtraCharge->setCustomerGroupId(new Identity('', 1));
-        $variationValueExtraCharge->setProductVariationValueId(new Identity('', 1));
-        $variationValueExtraCharge->setExtraChargeNet(1.2);
-        $variationValue->setExtraCharges([$variationValueExtraCharge]);
-        $variationValueInvisibility = new ProductVariationValueInvisibility();
-        $variationValueInvisibility->setCustomerGroupId(new Identity('', 1));
-        $variationValueInvisibility->setProductVariationValueId(new Identity('', 1));
-        $variationValue->setInvisibilities([$variationValueInvisibility]);*/
+        $variation->setValues([$variationValue]);
+        $parent->setVariations([$variation]);
+        
+        $child = (new Product())
+            ->setId(new Identity('', 2))
+            ->setStockLevel(new ProductStockLevel())
+            ->setPrices([$price])
+            ->setMinimumOrderQuantity(1)
+            ->setIsMasterProduct(false)
+            ->setMasterProductId(new Identity('', $this->hostId))
+            ->setVariations([$variation]);
+        
+        $result = $this->pushCoreModels([$parent, $child], true);
+        $parentEndpointId = $result[0]->getId()->getEndpoint();
+        $childEndpointId = $result[1]->getId()->getEndpoint();
+        
+        $this->assertNotEmpty($parentEndpointId);
+        $this->assertNotEmpty($childEndpointId);
+        
+        $parentResult = $this->pullCoreModels('Product', 1, $parentEndpointId);
+        $childResult = $this->pullCoreModels('Product', 1, $childEndpointId);
+        
+        $this->assertCoreModel($parent, $parentResult);
+        $this->assertCoreModel($childResult, $childResult);
+        
+        $this->deleteModel('Product', $parentEndpointId, $this->hostId);
+        $this->deleteModel('Product', $childEndpointId, 2);
+    }
+    
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
+    public function testProductVariationPush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $variation = (new ProductVariation())
+            ->setId(new Identity('', 1))
+            ->setProductId(new Identity('', $this->hostId))
+            ->setSort(64)
+            ->setType('SELECTBOX');
+        
+        $variationI18n = (new ProductVariationI18n())
+            ->setProductVariationId(new Identity('', 1))
+            ->setLanguageISO('de')
+            ->setName('Produktvariation');
+        
+        $variation->setI18ns([$variationI18n]);
+        
+        $variationValue = (new ProductVariationValue())
+            ->setId(new Identity('', 1))
+            ->setProductVariationId(new Identity('', 1))
+            ->setEan('1234567890123')
+            ->setExtraWeight(33.56)
+            ->setSku('Test')
+            ->setSort(64)
+            ->setStockLevel(22);
+        
+        $variationValueI18n = (new ProductVariationValueI18n())
+            ->setProductVariationValueId(new Identity('', 1))
+            ->setLanguageISO('de')
+            ->setName('Wert der Produktvariation');
+        
+        $variationValue->setI18ns([$variationValueI18n]);
         $variation->setValues([$variationValue]);
         $product->setVariations([$variation]);
         
@@ -553,18 +645,18 @@ abstract class ProductTest extends ConnectorTestCase
      * @throws LinkerException
      * @throws \ReflectionException
      */
-    public function testProductWarehousePush(){
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-        $product = new Product();
-        $product->setStockLevel(new ProductStockLevel());
-        $product->addPrice(new ProductPrice());
-        $warehouseInfo = new ProductWarehouseInfo();
-        $warehouseInfo->setProductId(new Identity('', $this->hostId));
-        $warehouseInfo->setwarehouseId(new Identity('', 1));
-        $warehouseInfo->setInflowQuantity(0.0);
-        $warehouseInfo->setstockLevel(0.0);
+    public function testProductWarehousePush()
+    {
+        $product = (new Product())
+            ->setStockLevel(new ProductStockLevel())
+            ->addPrice(new ProductPrice());
+        
+        $warehouseInfo = (new ProductWarehouseInfo())
+            ->setProductId(new Identity('', $this->hostId))
+            ->setwarehouseId(new Identity('', 1))
+            ->setInflowQuantity(66.0)
+            ->setstockLevel(5.0);
+        
         $product->setWarehouseInfo([$warehouseInfo]);
         
         $this->push($product);

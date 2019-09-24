@@ -1,4 +1,5 @@
 <?php
+
 namespace Jtl\Connector\IntegrationTests\Integration;
 
 use jtl\Connector\Exception\LinkerException;
@@ -30,14 +31,16 @@ abstract class ManufacturerTest extends ConnectorTestCase
      */
     public function testManufacturerBasicPush()
     {
-        $manufacturer = new Manufacturer();
-        $manufacturer->setName('Test');
-        $manufacturer->setSort(0);
-        $manufacturer->setUrlPath('');
-        $manufacturer->setWebsiteUrl('');
-        $i18n = new ManufacturerI18n();
-        $i18n->setManufacturerId(new Identity('', $this->hostId));
-        $i18n->setLanguageISO('ger');
+        $manufacturer = (new Manufacturer())
+            ->setName('Test')
+            ->setSort(0)
+            ->setUrlPath('')
+            ->setWebsiteUrl('');
+        
+        $i18n = (new ManufacturerI18n())
+            ->setManufacturerId(new Identity('', $this->hostId))
+            ->setLanguageISO('ger');
+        
         $manufacturer->addI18n($i18n);
         
         $this->push($manufacturer);
@@ -49,15 +52,16 @@ abstract class ManufacturerTest extends ConnectorTestCase
      */
     public function testManufacturerI18nPush()
     {
-        $manufacturer = new Manufacturer();
-        $manufacturer->setName('Test');
-        $i18n = new ManufacturerI18n();
-        $i18n->setManufacturerId(new Identity('', $this->hostId));
-        $i18n->setDescription('');
-        $i18n->setLanguageISO('ger');
-        $i18n->setMetaDescription('metaDescription');
-        $i18n->setMetaKeywords('metaKeywords');
-        $i18n->setTitleTag('titleTag');
+        $manufacturer = (new Manufacturer())
+            ->setName('Test');
+        
+        $i18n = (new ManufacturerI18n())
+            ->setManufacturerId(new Identity('', $this->hostId))
+            ->setDescription('TEST')
+            ->setLanguageISO('ger')
+            ->setMetaDescription('metaDescription')
+            ->setMetaKeywords('metaKeywords')
+            ->setTitleTag('titleTag');
         $manufacturer->addI18n($i18n);
         
         $this->push($manufacturer);
