@@ -577,6 +577,9 @@ abstract class ProductTest extends ConnectorTestCase
             ->setPrices([$price])
             ->setMinimumOrderQuantity(1)
             ->setIsMasterProduct(false)
+            ->setEan('1234567890123')
+            ->setSku('TEST')
+            ->setSort(4)
             ->setMasterProductId(new Identity('', $this->hostId))
             ->setVariations([$variation]);
         
