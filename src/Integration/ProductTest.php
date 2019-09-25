@@ -5,7 +5,6 @@ use jtl\Connector\Exception\LinkerException;
 use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use DateTime;
 use jtl\Connector\Model\CategoryI18n;
-use jtl\Connector\Model\Checksum;
 use jtl\Connector\Model\CustomerGroupPackagingQuantity;
 use jtl\Connector\Model\FileUpload;
 use jtl\Connector\Model\FileUploadI18n;
@@ -30,20 +29,15 @@ use jtl\Connector\Model\ProductSpecialPrice;
 use jtl\Connector\Model\ProductSpecialPriceItem;
 use jtl\Connector\Model\ProductSpecific;
 use jtl\Connector\Model\ProductStockLevel;
-use jtl\Connector\Model\ProductVarCombination;
 use jtl\Connector\Model\ProductVariation;
 use jtl\Connector\Model\ProductVariationI18n;
-use jtl\Connector\Model\ProductVariationInvisibility;
 use jtl\Connector\Model\ProductVariationValue;
-use jtl\Connector\Model\ProductVariationValueExtraCharge;
 use jtl\Connector\Model\ProductVariationValueI18n;
-use jtl\Connector\Model\ProductVariationValueInvisibility;
 use jtl\Connector\Model\ProductWarehouseInfo;
 use jtl\Connector\Model\Specific;
 use jtl\Connector\Model\SpecificI18n;
 use jtl\Connector\Model\SpecificValue;
 use jtl\Connector\Model\SpecificValueI18n;
-use jtl\Connector\Type\Category;
 
 abstract class ProductTest extends ConnectorTestCase
 {
@@ -522,6 +516,20 @@ abstract class ProductTest extends ConnectorTestCase
         $parent = (new Product())
             ->setId(new Identity('', $this->hostId))
             ->setStockLevel(new ProductStockLevel());
+    
+        $productI18n = (new ProductI18n())
+            ->setProductId(new Identity('', $this->hostId))
+            ->setDeliveryStatus('Done')
+            ->setDescription('Beschreibung')
+            ->setLanguageISO('ger')
+            ->setMeasurementUnitName('')
+            ->setMetaDescription('metaDescription')
+            ->setMetaKeywords('metaKeywords')
+            ->setName('testartikel')
+            ->setShortDescription('Kurze Beschreibung')
+            ->setTitleTag('Titel Tag')
+            ->setUnitName('Test')
+            ->setUrlPath('test-url');
         
         $price = (new ProductPrice())
             ->setCustomerGroupId(new Identity('', 1))
@@ -570,6 +578,7 @@ abstract class ProductTest extends ConnectorTestCase
         $variationValue->setI18ns([$variationValueI18n]);
         $variation->setValues([$variationValue]);
         $parent->setVariations([$variation]);
+        $parent->setI18ns([$productI18n]);
         
         $child = (new Product())
             ->setId(new Identity('', 2))
@@ -581,7 +590,8 @@ abstract class ProductTest extends ConnectorTestCase
             ->setSku('TEST')
             ->setSort(4)
             ->setMasterProductId(new Identity('', $this->hostId))
-            ->setVariations([$variation]);
+            ->setVariations([$variation])
+            ->setI18ns([$productI18n]);
         
         $result = $this->pushCoreModels([$parent, $child], true);
         $parentEndpointId = $result[0]->getId()->getEndpoint();
