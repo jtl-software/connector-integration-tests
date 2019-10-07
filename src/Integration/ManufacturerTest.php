@@ -1,44 +1,69 @@
 <?php
 
-namespace ConnectorIntegrationTests\Integration;
+namespace Jtl\Connector\IntegrationTests\Integration;
 
-use ConnectorIntegrationTests\ConnectorTestCase;
+use jtl\Connector\Exception\LinkerException;
+use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\Model\Manufacturer;
 use jtl\Connector\Model\ManufacturerI18n;
 
-class ManufacturerTest extends ConnectorTestCase
+abstract class ManufacturerTest extends ConnectorTestCase
 {
+    /**
+     * @param Manufacturer $manufacturer
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
+    protected function push(Manufacturer $manufacturer)
+    {
+        $manufacturer->setId(new Identity('', $this->hostId));
+        $endpointId = $this->pushCoreModels([$manufacturer], true)[0]->getId()->getEndpoint();
+        $this->assertNotEmpty($endpointId);
+        $result = $this->pullCoreModels('Manufacturer', 1, $endpointId);
+        $this->assertCoreModel($manufacturer, $result);
+        $this->deleteModel('Manufacturer', $endpointId, $this->hostId);
+    }
+    
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
     public function testManufacturerBasicPush()
     {
-        $manufacturer = new Manufacturer();
-        $manufacturer->setId(new Identity('', 1));
-        $manufacturer->setName('Test');
-        $manufacturer->setSort(0);
-        $manufacturer->setUrlPath('');
-        $manufacturer->setWebsiteUrl('');
+        $manufacturer = (new Manufacturer())
+            ->setName('Test')
+            ->setSort(0)
+            ->setUrlPath('')
+            ->setWebsiteUrl('');
         
-        $this->pushCoreModels([$manufacturer], true);
-    }
-    
-    public function testManufacturerI18nPush()
-    {
-        $manufacturer = new Manufacturer();
-        $manufacturer->setName('Test');
-            $i18n = new ManufacturerI18n();
-            $i18n->setManufacturerId(new Identity('', 1));
-            $i18n->setDescription('');
-            $i18n->setLanguageISO('ger');
-            $i18n->setMetaDescription('');
-            $i18n->setMetaKeywords('');
-            $i18n->setTitleTag('');
+        $i18n = (new ManufacturerI18n())
+            ->setManufacturerId(new Identity('', $this->hostId))
+            ->setLanguageISO('ger');
+        
         $manufacturer->addI18n($i18n);
         
-        $this->pushCoreModels([$manufacturer], true);
+        $this->push($manufacturer);
     }
     
-    public function getIgnoreArray()
+    /**
+     * @throws LinkerException
+     * @throws \ReflectionException
+     */
+    public function testManufacturerI18nPush()
     {
-        // TODO: Implement getIgnoreArray() method.
+        $manufacturer = (new Manufacturer())
+            ->setName('Test');
+        
+        $i18n = (new ManufacturerI18n())
+            ->setManufacturerId(new Identity('', $this->hostId))
+            ->setDescription('TEST')
+            ->setLanguageISO('ger')
+            ->setMetaDescription('metaDescription')
+            ->setMetaKeywords('metaKeywords')
+            ->setTitleTag('titleTag');
+        $manufacturer->addI18n($i18n);
+        
+        $this->push($manufacturer);
     }
 }

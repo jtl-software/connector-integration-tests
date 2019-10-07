@@ -1,12 +1,13 @@
 <?php
 
-namespace ConnectorIntegrationTests;
+namespace Jtl\Connector\IntegrationTests;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use jtl\Connector\Linker\IdentityLinker;
 use jtl\Connector\Mapper\IPrimaryKeyMapper;
 use jtl\Connector\Model\Ack;
 use jtl\Connector\Model\DataModel;
+use jtl\Connector\Model\Identity;
 use jtl\Connector\Serializer\JMS\SerializerBuilder;
 use PHPUnit\Framework\TestCase;
 use Jtl\Connector\Client\Client;
@@ -15,6 +16,7 @@ use Jtl\Connector\Client\Client;
 
 abstract class ConnectorTestCase extends TestCase
 {
+    protected $hostId = 1;
     /**
      * @var Client
      */
@@ -125,13 +127,23 @@ abstract class ConnectorTestCase extends TestCase
         return null;
     }
     
+    /**
+     * @param string $controllerName
+     * @param string $endpointId
+     * @param int $hostId
+     */
     protected function deleteModel(string $controllerName, string $endpointId, int $hostId)
     {
         $ack = new Ack();
-        $ack->setIdentities(new ArrayCollection([$controllerName => [$endpointId, $hostId]]));
-        $this->getConnectorClient()->ack($ack);
+        $collection = new ArrayCollection();
+        $idCollection = new ArrayCollection();
+        $idCollection->add(new Identity($endpointId, $hostId));
+        $collection->set($controllerName, $idCollection);
+        $ack->setIdentities($collection);
         
-        $this->getConnectorClient()->delete($controllerName, [(new ('jtl\Connector\Model\\'.$controllerName))->setId($endpointId, $hostId)]);
+        $this->getConnectorClient()->ack($ack);
+        $className = 'jtl\Connector\Model\\'.$controllerName;
+        $this->getConnectorClient()->delete($controllerName, [(new $className)->setId(new Identity($endpointId, $hostId))]);
     }
     
     /**
@@ -170,12 +182,13 @@ abstract class ConnectorTestCase extends TestCase
      * @param DataModel $expected
      * @param array|null $assertArray
      */
-    protected function assertCoreModel(DataModel $actual, DataModel $expected)
+    protected function assertCoreModel(DataModel $expected, DataModel $actual)
     {
         $ignoreArray = $this->getIgnoreArray();
         
-        $actualArray = json_decode(json_encode($actual), true);
-        $expectedArray = json_decode(json_encode($expected), true);
+        $actualArray = json_decode($actual->toJson(), true);
+        $expectedArray = json_decode($expected->toJson(), true);
+        
         
         foreach ($ignoreArray as $value) {
             $path = explode('.', $value);
@@ -196,6 +209,20 @@ abstract class ConnectorTestCase extends TestCase
             }
         }
         
+        $this->recursive_unset($actualArray, 'id');
+        $this->recursive_unset($expectedArray, 'id');
+        
         $this->assertEquals($expectedArray, $actualArray);
+    }
+    
+    protected function recursive_unset(&$array, $unwanted_key) {
+        
+        foreach ($array as $key => &$value) {
+            if (stripos($key, $unwanted_key) !== false) {
+                unset($array[$key]);
+            } elseif (is_array($value)) {
+                $this->recursive_unset($value, $unwanted_key);
+            }
+        }
     }
 }

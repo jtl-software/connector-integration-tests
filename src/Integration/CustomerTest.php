@@ -1,50 +1,49 @@
 <?php
+namespace Jtl\Connector\IntegrationTests\Integration;
 
-namespace ConnectorIntegrationTests\Integration;
-
-use ConnectorIntegrationTests\ConnectorTestCase;
+use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use DateTime;
 use jtl\Connector\Model\Customer;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\Model\CustomerAttr;
 
 
-class CustomerTest extends ConnectorTestCase
+abstract class CustomerTest extends ConnectorTestCase
 {
     public function testCustomerBasicPush()
     {
-        $customer = new Customer();
-        $customer->setCustomerGroupId(new Identity('', 1));
-        $customer->setId(new Identity('', 1));
-        $customer->setAccountCredit(0.0);
-        $customer->setBirthday(new DateTime());
-        $customer->setCity('');
-        $customer->setCompany('');
-        $customer->setCountryIso('');
-        $customer->setCreationDate(new DateTime());
-        $customer->setCustomerNumber('');
-        $customer->setDeliveryInstruction('');
-        $customer->setDiscount(0.0);
-        $customer->setEMail('');
-        $customer->setExtraAddressLine('');
-        $customer->setFax('');
-        $customer->setFirstName('');
-        $customer->setHasCustomerAccount(true);
-        $customer->setHasNewsletterSubscription(true);
-        $customer->setIsActive(true);
-        $customer->setLanguageISO('ger');
-        $customer->setLastName('');
-        $customer->setMobile('');
-        $customer->setNote('');
-        $customer->setOrigin('');
-        $customer->setPhone('');
-        $customer->setSalutation('');
-        $customer->setState('');
-        $customer->setStreet('');
-        $customer->setTitle('');
-        $customer->setVatNumber('');
-        $customer->setWebsiteUrl('');
-        $customer->setZipCode('');
+        $customer = (new Customer())
+            ->setCustomerGroupId(new Identity('', 1))
+            ->setId(new Identity('', 1))
+            ->setAccountCredit(0.0)
+            ->setBirthday(new DateTime())
+            ->setCity('')
+            ->setCompany('')
+            ->setCountryIso('')
+            ->setCreationDate(new DateTime())
+            ->setCustomerNumber('')
+            ->setDeliveryInstruction('')
+            ->setDiscount(0.0)
+            ->setEMail('')
+            ->setExtraAddressLine('')
+            ->setFax('')
+            ->setFirstName('')
+            ->setHasCustomerAccount(true)
+            ->setHasNewsletterSubscription(true)
+            ->setIsActive(true)
+            ->setLanguageISO('ger')
+            ->setLastName('')
+            ->setMobile('')
+            ->setNote('')
+            ->setOrigin('')
+            ->setPhone('')
+            ->setSalutation('')
+            ->setState('')
+            ->setStreet('')
+            ->setTitle('')
+            ->setVatNumber('')
+            ->setWebsiteUrl('')
+            ->setZipCode('');
         
         $this->pushCoreModels([$customer], true);
     }
@@ -52,17 +51,12 @@ class CustomerTest extends ConnectorTestCase
     public function testCustomerAttributePush()
     {
         $customer = new Customer();
-            $attribute = new CustomerAttr();
-            $attribute->setCustomerId(new Identity('', 1));
-            $attribute->setKey('');
-            $attribute->setValue('');
+        $attribute = (new CustomerAttr())
+            ->setCustomerId(new Identity('', 1))
+            ->setKey('')
+            ->setValue('');
         $customer->addAttribute($attribute);
-    
+        
         $this->pushCoreModels([$customer], true);
-    }
-    
-    public function getIgnoreArray()
-    {
-        // TODO: Implement getIgnoreArray() method.
     }
 }

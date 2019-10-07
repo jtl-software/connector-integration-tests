@@ -1,8 +1,8 @@
 <?php
 
-namespace ConnectorIntegrationTests\Integration;
+namespace Jtl\Connector\IntegrationTests\Integration;
 
-use ConnectorIntegrationTests\ConnectorTestCase;
+use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use DateTime;
 use jtl\Connector\Model\DeliveryNote;
 use jtl\Connector\Model\DeliveryNoteItem;
@@ -10,16 +10,16 @@ use jtl\Connector\Model\DeliveryNoteItemInfo;
 use jtl\Connector\Model\DeliveryNoteTrackingList;
 use jtl\Connector\Model\Identity;
 
-class DeliveryNoteTest extends ConnectorTestCase
+abstract class DeliveryNoteTest extends ConnectorTestCase
 {
     public function testDeliveryNoteBasicPush()
     {
-        $deliveryNote = new DeliveryNote();
-        $deliveryNote->setCustomerOrderId(new Identity('', 1));
-        $deliveryNote->setId(new Identity('', 1));
-        $deliveryNote->setCreationDate(new DateTime());
-        $deliveryNote->setIsFulfillment(true);
-        $deliveryNote->setNote('');
+        $deliveryNote = (new DeliveryNote())
+            ->setCustomerOrderId(new Identity('', 1))
+            ->setId(new Identity('', 1))
+            ->setCreationDate(new DateTime())
+            ->setIsFulfillment(true)
+            ->setNote('');
         
         $this->pushCoreModels([$deliveryNote], true);
     }
@@ -27,18 +27,21 @@ class DeliveryNoteTest extends ConnectorTestCase
     public function testDeliveryNoteItemsPush()
     {
         $deliveryNote = new DeliveryNote();
-            $item = new DeliveryNoteItem();
-            $item->setCustomerOrderItemId(new Identity('', 1));
-            $item->setDeliveryNoteId(new Identity('', 1));
-            $item->setProductId(new Identity('', 1));
-            $item->setId(new Identity('', 1));
-            $item->setQuantity(0.0);
-                $info = new DeliveryNoteItemInfo();
-                $info->setBatch('');
-                $info->setBestBefore(new DateTime());
-                $info->setQuantity(0.0);
-                $info->setWarehouseId(0);
-            $item->addInfo($info);
+        
+        $item = (new DeliveryNoteItem())
+            ->setCustomerOrderItemId(new Identity('', 1))
+            ->setDeliveryNoteId(new Identity('', 1))
+            ->setProductId(new Identity('', 1))
+            ->setId(new Identity('', 1))
+            ->setQuantity(0.0);
+        
+        $info = (new DeliveryNoteItemInfo())
+            ->setBatch('')
+            ->setBestBefore(new DateTime())
+            ->setQuantity(0.0)
+            ->setWarehouseId(0);
+        
+        $item->addInfo($info);
         $deliveryNote->addItem($item);
         
         $this->pushCoreModels([$deliveryNote], true);
@@ -47,16 +50,12 @@ class DeliveryNoteTest extends ConnectorTestCase
     public function testDeliveryNoteTrackingListsPush()
     {
         $deliveryNote = new DeliveryNote();
-            $trackingList = new DeliveryNoteTrackingList();
-            $trackingList->setName('');
-            $trackingList->addCode('');
+        
+        $trackingList = (new DeliveryNoteTrackingList())
+            ->setName('')
+            ->addCode('');
         $deliveryNote->addTrackingList($trackingList);
         
         $this->pushCoreModels([$deliveryNote], true);
-    }
-    
-    public function getIgnoreArray()
-    {
-        // TODO: Implement getIgnoreArray() method.
     }
 }

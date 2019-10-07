@@ -1,73 +1,64 @@
 <?php
 
-namespace ConnectorIntegrationTests\Integration;
+namespace Jtl\Connector\IntegrationTests\Integration;
 
-use ConnectorIntegrationTests\ConnectorTestCase;
+use Jtl\Connector\IntegrationTests\ConnectorTestCase;
 use jtl\Connector\Model\Identity;
 use jtl\Connector\Model\Specific;
 use jtl\Connector\Model\SpecificI18n;
 use jtl\Connector\Model\SpecificValue;
 use jtl\Connector\Model\SpecificValueI18n;
 
-class SpecificTest extends ConnectorTestCase
+abstract class SpecificTest extends ConnectorTestCase
 {
-    public function testSpecificBasicPush()
+    public function push(Specific $specific)
     {
-        $specific = new Specific();
-            $i18n = new SpecificI18n();
-            $i18n->setSpecificId(new Identity('', 1));
-            $i18n->setLanguageISO('ger');
-            $i18n->setName('');
-        $specific->addI18n($i18n);
-        $specific->setId(new Identity('', 1));
-        $specific->setIsGlobal(true);
-        $specific->setSort(0);
-        $specific->setType('');
+        $i18n = (new SpecificI18n())
+            ->setSpecificId(new Identity('', 1))
+            ->setLanguageISO('ger')
+            ->setName('Specific Name');
         
-        $this->pushCoreModels([$specific], true);
+        $specific->setI18ns([$i18n])
+            ->setType('string')
+            ->setId(new Identity('', $this->hostId));
+        
+        $endpointId = $this->pushCoreModels([$specific], true)[0]->getId()->getEndpoint();
+        $this->assertNotEmpty($endpointId);
+        $result = $this->pullCoreModels('Specific', 1, $endpointId);
+        $this->assertCoreModel($specific, $result);
+        $this->deleteModel('Specific', $endpointId, $this->hostId);
     }
     
-    public function testSpecificI18nPush()
+    public function testSpecificBasicPush()
     {
-        $specific = new Specific();
-            $i18n = new SpecificI18n();
-            $i18n->setSpecificId(new Identity('', 1));
-            $i18n->setLanguageISO('ger');
-            $i18n->setName('');
-        $specific->addI18n($i18n);
-    
-        $this->pushCoreModels([$specific], true);
+        $specific = (new Specific())
+            ->setIsGlobal(true)
+            ->setSort(0);
+        
+        $this->push($specific);
     }
     
     public function testSpecificValuesPush()
     {
         $specific = new Specific();
-            $i18n = new SpecificI18n();
-            $i18n->setSpecificId(new Identity('', 1));
-            $i18n->setLanguageISO('ger');
-            $i18n->setName('');
-        $specific->addI18n($i18n);
-            $value = new SpecificValue();
-            $value->setId(new Identity('', 1));
-            $value->setSpecificId(new Identity('', 1));
-            $value->setSort(0);
-                $i18n = new SpecificValueI18n();
-                $i18n->setSpecificValueId(new Identity('', 1));
-                $i18n->setDescription('');
-                $i18n->setLanguageISO('ger');
-                $i18n->setMetaDescription('');
-                $i18n->setMetaKeywords('');
-                $i18n->setTitleTag('');
-                $i18n->setUrlPath('');
-                $i18n->setValue('');
-            $value->addI18n($i18n);
+        
+        $value = (new SpecificValue())
+            ->setSpecificId(new Identity('', $this->hostId))
+            ->setSort(0);
+        
+        $specificValueI18n = (new SpecificValueI18n())
+            ->setSpecificValueId(new Identity('', 1))
+            ->setDescription('Specific Beschreibung')
+            ->setLanguageISO('ger')
+            ->setMetaDescription('Meta Beschreibung')
+            ->setMetaKeywords('Meta Keywords')
+            ->setTitleTag('Title Tag')
+            ->setUrlPath('URL Pfad')
+            ->setValue('Value Value');
+        
+        $value->addI18n($specificValueI18n);
         $specific->addValue($value);
-    
-        $this->pushCoreModels([$specific], true);
-    }
-    
-    public function getIgnoreArray()
-    {
-        // TODO: Implement getIgnoreArray() method.
+        
+        $this->push($specific);
     }
 }
