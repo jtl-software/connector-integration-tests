@@ -33,9 +33,9 @@ abstract class ManufacturerTest extends ConnectorTestCase
     {
         $manufacturer = (new Manufacturer())
             ->setName('Test')
-            ->setSort(0)
-            ->setUrlPath('')
-            ->setWebsiteUrl('');
+            ->setSort(33)
+            ->setUrlPath('testpath')
+            ->setWebsiteUrl('testurl');
         
         $i18n = (new ManufacturerI18n())
             ->setManufacturerId(new Identity('', $this->hostId))

@@ -53,7 +53,7 @@ abstract class ProductTest extends ConnectorTestCase
             ->setDeliveryStatus('Done')
             ->setDescription('Beschreibung')
             ->setLanguageISO('ger')
-            ->setMeasurementUnitName('')
+            ->setMeasurementUnitName('kg')
             ->setMetaDescription('metaDescription')
             ->setMetaKeywords('metaKeywords')
             ->setName('testartikel')
@@ -80,9 +80,13 @@ abstract class ProductTest extends ConnectorTestCase
         if ($product->getMinimumOrderQuantity() == 0) {
             $product->setMinimumOrderQuantity(1);
         }
+        if ($product->getCreationDate() == null) {
+            $product->setCreationDate(new DateTime('2019-08-21T00:00:00+0200'));
+        }
         
         $product->setId(new Identity('', $this->hostId));
         $endpointId = $this->pushCoreModels([$product], true)[0]->getId()->getEndpoint();
+        
         $this->assertNotEmpty($endpointId);
         $result = $this->pullCoreModels('Product', 1, $endpointId);
         $this->assertCoreModel($product, $result);
@@ -114,7 +118,7 @@ abstract class ProductTest extends ConnectorTestCase
             ->setEpid('Test')
             ->setHazardIdNumber('Test')
             ->setHeight(33.56)
-            ->setIsActive(true)
+            ->setIsActive(false)
             ->setIsBatch(true)
             ->setIsBestBefore(true)
             ->setIsbn('978-1692748777')
@@ -180,8 +184,8 @@ abstract class ProductTest extends ConnectorTestCase
             ->setStockLevel(new ProductStockLevel())
             ->addPrice(new ProductPrice())
             ->setManufacturerId($manufacturerId);
-        $this->push($product);
         
+        $this->push($product);
         $this->deleteModel('manufacturer', $manufacturerId->getEndpoint(), 1);
     }
     
@@ -437,8 +441,8 @@ abstract class ProductTest extends ConnectorTestCase
         $specialPrice = (new ProductSpecialPrice())
             ->setId(new Identity('', 1))
             ->setProductId(new Identity('', $this->hostId))
-            ->setActiveFromDate(new DateTime())
-            ->setActiveUntilDate(new DateTime())
+            ->setActiveFromDate(new DateTime('now', new \DateTimeZone('+0200')))
+            ->setActiveUntilDate(new DateTime('now', new \DateTimeZone('+0200')))
             ->setConsiderDateLimit(true)
             ->setConsiderStockLimit(true)
             ->setIsActive(true)
@@ -516,7 +520,7 @@ abstract class ProductTest extends ConnectorTestCase
         $parent = (new Product())
             ->setId(new Identity('', $this->hostId))
             ->setStockLevel(new ProductStockLevel());
-    
+        
         $productI18n = (new ProductI18n())
             ->setProductId(new Identity('', $this->hostId))
             ->setDeliveryStatus('Done')
@@ -545,7 +549,8 @@ abstract class ProductTest extends ConnectorTestCase
         $price->setItems([$priceItem]);
         $parent->setPrices([$price]);
         
-        $parent->setMinimumOrderQuantity(1);
+        $parent->setMinimumOrderQuantity(1)
+            ->setCreationDate(new DateTime('2019-08-21T00:00:00+0200'));
         $parent->setIsMasterProduct(true);
         
         $variation = (new ProductVariation())
@@ -581,10 +586,11 @@ abstract class ProductTest extends ConnectorTestCase
         $parent->setI18ns([$productI18n]);
         
         $child = (new Product())
-            ->setId(new Identity('', 2))
+            ->setId(new Identity('', 44))
             ->setStockLevel(new ProductStockLevel())
             ->setPrices([$price])
             ->setMinimumOrderQuantity(1)
+            ->setCreationDate(new DateTime('2019-08-21T00:00:00+0200'))
             ->setIsMasterProduct(false)
             ->setEan('1234567890123')
             ->setSku('TEST')
